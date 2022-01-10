@@ -11,9 +11,10 @@ import (
 )
 
 type Room struct {
-	ClientList        []*Client
-	RoomPack          *GameProto.RoomPack
-	OnlinePlayerCount int
+	ClientList         []*Client
+	RoomPack           *GameProto.RoomPack
+	OnlinePlayerCount  int
+	OffLinePlayerCount int
 
 	CurrentBossType       GameProto.CardType
 	CurrentBossBeJokerAtk bool
@@ -26,6 +27,11 @@ type Room struct {
 
 	CURRENT_BOSS_INDEX     int
 	CURRENT_MAX_TURN_COUNT int
+
+	ISGAMELOSE bool
+	ISGAMEWIN  bool
+
+	HadPlayerOutLine bool
 }
 
 type BossActor struct {
@@ -55,6 +61,19 @@ func (room *Room) Destroy() error {
 	RoomList = RemoveRoom(RoomList, room)
 	room = nil
 	return nil
+}
+
+func (room *Room) SendMsg(SystemMsg string, client *Client) {
+	if room == nil {
+		return
+	}
+	mainpack := &GameProto.MainPack{}
+	mainpack.Requestcode = GameProto.RequestCode_Room
+	mainpack.Actioncode = GameProto.ActionCode_Chat
+	mainpack.Returncode = GameProto.ReturnCode_Success
+	mainpack.Str = SystemMsg
+
+	room.BroadcastTCP(client, mainpack)
 }
 
 func CreateRoom(roomName string) Room {

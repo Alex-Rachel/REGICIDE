@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 class SettingUI : UIWindow
@@ -9,6 +10,8 @@ class SettingUI : UIWindow
     private Slider m_sliderBg;
     private Slider m_sliderBtn;
     private Button m_btnClose;
+    private GameObject m_goDropdown;
+    private Dropdown m_Dropdown;
     protected override void ScriptGenerator()
     {
         m_textBgMusic = FindChildComponent<Text>("m_textBgMusic");
@@ -16,7 +19,15 @@ class SettingUI : UIWindow
         m_sliderBg = FindChildComponent<Slider>("m_sliderBg");
         m_sliderBtn = FindChildComponent<Slider>("m_sliderBtn");
         m_btnClose = FindChildComponent<Button>("m_btnClose");
+        m_goDropdown = FindChild("m_goDropdown").gameObject;
+        m_Dropdown = m_goDropdown.GetComponent<Dropdown>();
         m_btnClose.onClick.AddListener(OnClickCloseBtn);
+        m_Dropdown.onValueChanged.AddListener(OnServerChange);
+    }
+
+    private void OnServerChange(int arg0)
+    {
+        GameApp.Instance.hostPoint = (GameApp.HostPoint)arg0;
     }
     #endregion
 

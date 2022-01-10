@@ -31,7 +31,7 @@ func Start(server Server) {
 	CreateRoom("断剑重铸之日")
 	print("START REGICIDE SERVER")
 	r := gin.Default()
-	f, _ := os.Create("regicide.log")
+	f, _ := os.Create("log/regicide.log")
 	gin.DefaultWriter = io.MultiWriter(f)
 
 	r.Use(middleware.CrosMiddleWare())
@@ -96,8 +96,12 @@ func RemoveClient(client *Client) {
 	room := client.RoomInfo
 	if room != nil {
 		room.OnlinePlayerCount--
+		room.OffLinePlayerCount++
+		room.HadPlayerOutLine = true
 		if room.OnlinePlayerCount == 0 {
 			room.Destroy()
+		} else {
+			room.SendMsg("您的队友已掉线", client)
 		}
 	}
 

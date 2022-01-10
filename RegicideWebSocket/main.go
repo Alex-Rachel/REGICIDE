@@ -17,6 +17,8 @@ func main() {
 	InitControllers()
 	InitLogger()
 
+	tserver.GMMODE = false
+
 	tserver.StartServer(":8767")
 	select {}
 }
@@ -46,6 +48,14 @@ func InitDatabase() {
 }
 
 func InitLogger() {
+	logger.Trace("this is Trace") // 由于默认输出，只会在控制台输出Debug及其以上日志，所以该条不会输出
+	logger.Debug("this is Debug")
+	logger.Info("this is Info")
+	logger.Warn("this is Warn")
+	logger.Error("this is Error")
+	logger.Crit("this is Critical")
+	logger.Alert("this is Alert")
+	logger.Emer("this is Emergency")
 	print("\n 	 _   _      _ _    __        __         _     _ \n	| | | | ___| | | __\\ \\      / /__  _ __| | __| |\n	| |_| |/ _ \\ | |/ _ \\ \\ /\\ / / _ \\| '__| |/ _` |\n	|  _  |  __/ | | (_) \\ V  V / (_) | |  | | (_| |\n	|_| |_|\\___|_|_|\\___/ \\_/\\_/ \\___/|_|  |_|\\__,_|")
 	logger.SetLogger("config/log.json")
 }

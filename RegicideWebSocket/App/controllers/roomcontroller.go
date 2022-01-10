@@ -168,7 +168,7 @@ func ExitRoom(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (
 	if roomLeftCount <= 0 {
 		room.Destroy()
 		return mainpack, nil
-	} else {
+	} else if room.RoomPack.State == 0 {
 		client.RoomInfo = nil
 		room.ClientList = server.RemoveC(room.ClientList, client)
 		room.RoomPack.ActorPack = server.RemoveActor(room.RoomPack.ActorPack, client.Actor)

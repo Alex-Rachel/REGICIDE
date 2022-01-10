@@ -36,6 +36,23 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 	if mainpack.Roompack[0].ActorPack == nil || len(mainpack.Roompack[0].ActorPack) <= 0 {
 		return nil, errors.New("mainpack.Roompack[0].ActorPack[0] is nil")
 	}
+	if client.RoomInfo.ISGAMEWIN {
+		mainpack := &GameProto.MainPack{}
+		mainpack.Requestcode = GameProto.RequestCode_Room
+		mainpack.Actioncode = GameProto.ActionCode_Chat
+		mainpack.Returncode = GameProto.ReturnCode_Success
+		mainpack.Str = "游戏胜利！！！"
+		client.RoomInfo.Broadcast(mainpack)
+		return nil, nil
+	} else if client.RoomInfo.ISGAMELOSE {
+		mainpack := &GameProto.MainPack{}
+		mainpack.Requestcode = GameProto.RequestCode_Room
+		mainpack.Actioncode = GameProto.ActionCode_Chat
+		mainpack.Returncode = GameProto.ReturnCode_Success
+		mainpack.Str = "游戏失败！！！"
+		client.RoomInfo.Broadcast(mainpack)
+		return nil, nil
+	}
 
 	client.RoomInfo.RoomPack.CurrentUseCards = client.RoomInfo.RoomPack.CurrentUseCards[0:0]
 	if mainpack.Str == "JKR" {
@@ -69,18 +86,14 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 	var bossDie bool
 	var gameLose bool
 	if choiceCardCount > 0 {
-		bossdie, err := client.AttackBoss(choiceCards)
-
-		if err != nil {
-			logger.Error(err)
-			return nil, err
-		}
 
 		if hadJoker {
 			for i := 0; i < choiceCardCount; i++ {
 				client.Actor.CuttrntCards = tserver.RemoveCardData(client.Actor.CuttrntCards, choiceCards[i])
 				//放进弃牌堆		//攻击的时候放入boss未死亡的堆
 				client.RoomInfo.CurrentAttackCardList = append(client.RoomInfo.UsedCardList, choiceCards[i])
+
+				client.RoomInfo.RoomPack.MuDiCards = client.RoomInfo.UsedCardList
 				//放入协议通知客户端
 				client.RoomInfo.RoomPack.CurrentUseCards = append(client.RoomInfo.RoomPack.CurrentUseCards, choiceCards[i])
 			}
@@ -96,7 +109,6 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 			client.RoomInfo.Broadcast(mainpack)
 			return nil, nil
 		}
-		bossDie = bossdie
 
 		for i := 0; i < choiceCardCount; i++ {
 			client.Actor.CuttrntCards = tserver.RemoveCardData(client.Actor.CuttrntCards, choiceCards[i])
@@ -105,6 +117,18 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 			//放入协议通知客户端
 			client.RoomInfo.RoomPack.CurrentUseCards = append(client.RoomInfo.RoomPack.CurrentUseCards, choiceCards[i])
 		}
+
+		bossdie, err := client.AttackBoss(choiceCards)
+
+		bossDie = bossdie
+
+		if err != nil {
+			logger.Error(err)
+			return nil, err
+		}
+
+		client.RoomInfo.RoomPack.MuDiCards = client.RoomInfo.UsedCardList
+
 		var currentCardsValue int32
 		for i := 0; i < len(client.Actor.CuttrntCards); i++ {
 			if client.Actor.CuttrntCards[i].CardType == GameProto.CardType_JOKER || int(client.Actor.CuttrntCards[i].CardType) == 6 {
@@ -114,6 +138,7 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 		}
 		if currentCardsValue < client.RoomInfo.RoomPack.BossActor.ATK && !bossDie {
 			gameLose = true
+			client.RoomInfo.ISGAMELOSE = true
 		}
 	}
 
@@ -124,6 +149,12 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 	mainpack.Returncode = GameProto.ReturnCode_Success
 	if gameLose {
 		mainpack.Str = "GAMELOSE"
+		client.RoomInfo.RoomPack.State = 0
+		client.RoomInfo.RoomPack.Gamestate.State = GameProto.GAMESTATE_STATE1
+		client.RoomInfo.Broadcast(mainpack)
+		return nil, nil
+	} else if client.RoomInfo.ISGAMEWIN {
+		mainpack.Str = "GAMEWIN"
 		client.RoomInfo.RoomPack.State = 0
 		client.RoomInfo.RoomPack.Gamestate.State = GameProto.GAMESTATE_STATE1
 		client.RoomInfo.Broadcast(mainpack)

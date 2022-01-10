@@ -9,24 +9,12 @@ import (
 	"github.com/wonderivan/logger"
 )
 
-const (
-	// TOTAL_CARD_COUNT = 54
-	TOTAL_BOSS_COUNT = 12
-)
+var GMMODE bool
 
 var TOTAL_CARD_COUNT int
 
 //InitCards 初始化所有卡牌
 func (room *Room) InitCards() {
-	// clientCount := len(room.ClientList)
-	// if clientCount <= 2 {
-	// 	TOTAL_CARD_COUNT = 52
-	// } else if clientCount == 3 {
-	// 	TOTAL_CARD_COUNT = 53
-	// } else if clientCount == 4 {
-	// 	TOTAL_CARD_COUNT = 54
-	// }
-
 	TOTAL_CARD_COUNT = 52
 	for i := 0; i < TOTAL_CARD_COUNT; i++ {
 		cardData := InstanceCardData(i)
@@ -43,6 +31,10 @@ func (room *Room) InitMyCards() {
 			room.MyCardList = append(room.MyCardList, cardData)
 		}
 	}
+	cardDataBigJoker := InstanceCardData(53)
+	cardDataBigJoker.IsJoker = true
+	room.BossList = append(room.BossList, &cardDataBigJoker)
+
 	RandomSort(room.MyCardList)
 	room.RoomPack.LeftCardCount = int32(len(room.MyCardList))
 }
@@ -106,7 +98,7 @@ func (client *Client) AddHp(number int) {
 
 // 方块抽卡
 func (client *Client) TurnCardDiamond(number int) {
-	logger.Debug("TurnCardDiamond number=>", number)
+	logger.Emer("client Username:", client.Username, "TurnCardDiamond number=>", number)
 	room := client.RoomInfo
 	turnCount := number
 	if turnCount == 0 {
@@ -121,17 +113,20 @@ func (client *Client) TurnCardDiamond(number int) {
 	myIndex := 0
 	clientCount := len(room.ClientList)
 	for i := 0; i < len(room.ClientList); i++ {
-		if room.ClientList[i] == client {
+		if room.ClientList[i].ActorID == client.ActorID {
 			myIndex = i
 			break
 		}
 	}
 	i := 0
 	index := myIndex
+	logger.Emer("Index", myIndex)
 	continueCount := 0
 	for {
-		// logger.Debug(i, index, continueCount)
 		if i > turnCount || continueCount > turnCount {
+			break
+		}
+		if i > len(room.MyCardList)-1 {
 			break
 		}
 		if index >= clientCount {
@@ -143,15 +138,14 @@ func (client *Client) TurnCardDiamond(number int) {
 			continueCount++
 			continue
 		}
+		logger.Emer("Username:", room.ClientList[index].Username, "抽到手中：", i, "玩家：", index, "continueCount：", continueCount)
 		cardData := room.MyCardList[i]
 		room.MyCardList = RemoveCard(room.MyCardList, cardData)
 		cardProtoData := &GameProto.CardData{CardInt: int32(cardData.CardInt), CardValue: int32(cardData.CardValue)}
 		room.ClientList[index].Actor.CuttrntCards = append(room.ClientList[index].Actor.CuttrntCards, cardProtoData)
 		i++
 		index++
-		if i > turnCount {
-			break
-		}
+		logger.Emer("index", index)
 	}
 	client.RoomInfo.RoomPack.LeftCardCount = int32(len(room.MyCardList))
 }
@@ -213,7 +207,14 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 		bossPower = 12
 	} else if room.CURRENT_BOSS_INDEX <= 12 {
 		bossPower = 13
+	} else if room.CURRENT_BOSS_INDEX == 13 {
+		bossPower = 0
+	} else {
+		logger.Emer("监控：这个index有问题:room.CURRENT_BOSS_INDEX ", room.CURRENT_BOSS_INDEX)
+		bossPower = 13
 	}
+
+	logger.Emer("监控:room.CURRENT_BOSS_INDEX ", room.CURRENT_BOSS_INDEX)
 
 	var cacheList []*CardData
 	for i := 0; i < count; i++ {
@@ -222,8 +223,21 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 		}
 	}
 
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	index := r.Intn(len(cacheList))
+	cacheListCount := len(cacheList)
+
+	logger.Emer("监控:cacheList", cacheList, "监控:cacheList.count:", cacheListCount)
+
+	var index int
+
+	if cacheListCount <= 0 {
+		room.ISGAMEWIN = true
+		logger.Emer("监控有问题！！！:cacheList", cacheList, "监控:cacheList.count:", cacheListCount)
+		index = 0
+		return nil
+	} else {
+		r := rand.New(rand.NewSource(time.Now().UnixNano()))
+		index = r.Intn(cacheListCount)
+	}
 
 	var atk int32
 	var hp int32
@@ -236,10 +250,13 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 		hp = 20
 	} else if cardData.CardValue == 12 {
 		atk = 15
-		hp = 25
+		hp = 30
 	} else if cardData.CardValue == 13 {
 		atk = 20
-		hp = 30
+		hp = 40
+	} else if cardData.IsJoker && cardData.CardType == 6 {
+		atk = 30
+		hp = 55
 	} else {
 		atk = 30
 		hp = 50
@@ -279,6 +296,13 @@ func (client *Client) AttackBoss(cardData []*GameProto.CardData) (bool, error) {
 }
 
 func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData AttackData) bool {
+	if client == nil {
+		return false
+	}
+	if bossActor == nil {
+		return false
+	}
+
 	room := client.RoomInfo
 
 	if attackData.HadJoker {
@@ -298,24 +322,27 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 			bossActor.ATK = 0
 		}
 	}
-	if attackData.CouldAddHp && (room.CurrentBossType != GameProto.CardType_HEART) {
+	if attackData.CouldAddHp && (room.CurrentBossType != GameProto.CardType_HEART) && room.RoomPack.BossActor.ActorId != 53 {
 		client.AddHp(int(attackData.Damage))
 	}
 
-	if attackData.CouldTurnCard && (room.CurrentBossType != GameProto.CardType_DIAMOND) {
+	if attackData.CouldTurnCard && (room.CurrentBossType != GameProto.CardType_DIAMOND) && room.RoomPack.BossActor.ActorId != 53 {
 		client.TurnCardDiamond(int(attackData.Damage))
 	}
 
-	if coubldDouble {
+	if GMMODE {
+		bossActor.Hp -= 999
+	} else if coubldDouble {
 		bossActor.Hp -= 2 * attackData.Damage
 	} else {
 		bossActor.Hp -= attackData.Damage
 	}
 
-	if bossActor.Hp < 0 {
-		cardData := InstanceCardData(int(bossActor.ActorId))
-		room.MyCardList = append(room.MyCardList, &cardData)
-	} else if bossActor.Hp == 0 {
+	if bossActor.Hp < 0 && bossActor.ActorId != 53 {
+		cardData := GameProto.CardData{CardInt: bossActor.ActorId, CardType: GameProto.CardType(bossActor.ActorJob)}
+		room.UsedCardList = append(room.UsedCardList, &cardData)
+		room.RoomPack.MuDiCards = room.UsedCardList
+	} else if bossActor.Hp == 0 && bossActor.ActorId != 53 {
 		cardData := InstanceCardData(int(bossActor.ActorId))
 		room.MyCardList = append(room.MyCardList, &cardData)
 
@@ -333,7 +360,25 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 			room.RoomPack.MuDiCards = room.UsedCardList
 		}
 		room.CurrentAttackCardList = room.CurrentAttackCardList[0:0]
-		room.InitBoss()
+		if room.CURRENT_BOSS_INDEX <= 13 {
+			room.InitBoss()
+			if room.ISGAMEWIN {
+				mainpack := &GameProto.MainPack{}
+				mainpack.Requestcode = GameProto.RequestCode_Room
+				mainpack.Actioncode = GameProto.ActionCode_Chat
+				mainpack.Returncode = GameProto.ReturnCode_Success
+				mainpack.Str = "游戏胜利！！！"
+				room.Broadcast(mainpack)
+			}
+		} else {
+			logger.Debug("GAME WIN")
+			mainpack := &GameProto.MainPack{}
+			mainpack.Requestcode = GameProto.RequestCode_Room
+			mainpack.Actioncode = GameProto.ActionCode_Chat
+			mainpack.Returncode = GameProto.ReturnCode_Success
+			mainpack.Str = "游戏胜利！！！"
+			room.Broadcast(mainpack)
+		}
 	}
 	logger.Debug("bossActor:", bossActor)
 	return bossDie

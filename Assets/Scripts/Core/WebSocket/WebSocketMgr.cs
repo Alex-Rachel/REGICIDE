@@ -8,10 +8,13 @@ public class WebSocketMgr : UnitySingleton<WebSocketMgr>
 {
     //string address = "wss://echo.websocket.org";
     //public string address = "ws://127.0.0.1:12345/ws";
-    WebSocket webSocket;
+    public WebSocket webSocket;
     private Action m_Action = null;
+    public bool m_useReconnect = true;
+    private bool m_hadInit = true;
     public void Init(Action callback = null)
     {
+        m_hadInit = true;
         var address = GameApp.Instance.Host;
 
         m_Action = callback;
@@ -102,10 +105,12 @@ public class WebSocketMgr : UnitySingleton<WebSocketMgr>
         Debug.LogFormat("OnClosed: code={0}, msg={1}", code, message);
         webSocket = null;
         GameClient.Instance.Status = GameClientStatus.StatusClose;
+        GameDataMgr.Instance.HadLogin = false;
     }
 
     void OnError(WebSocket ws, string reason)
     {
+        GameClient.Instance.Status = GameClientStatus.StatusClose;
         string errorMsg = string.Empty;
 #if !UNITY_WEBGL || UNITY_EDITOR
         if (ws.InternalRequest.Response != null)
@@ -116,6 +121,7 @@ public class WebSocketMgr : UnitySingleton<WebSocketMgr>
         Debug.LogFormat("OnError: error occured: {0}\n", ("Unknown Error " + errorMsg));
         Debug.Log(reason);
         webSocket = null;
+        GameDataMgr.Instance.HadLogin = false;
     }
 
 
@@ -135,5 +141,35 @@ public class WebSocketMgr : UnitySingleton<WebSocketMgr>
         OnRequestFinished);
         request.AddField("FieldName", "Field Value");
         request.Send();
+    }
+
+    private bool m_enableReConnect;
+    void Update()
+    {
+#if UNITY_EDITOR
+
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (webSocket != null)
+            {
+                webSocket.Close();
+                webSocket = null;
+            }
+        }
+#endif
+        if (m_useReconnect && !m_enableReConnect)
+        {
+            if (m_hadInit && GameClient.Instance.Status == GameClientStatus.StatusClose)
+            {
+                m_enableReConnect = true;
+
+                GameClient.Instance.CheckReconnectInGames();
+            }
+        }
+    }
+
+    public void ReconnectSuccessed()
+    {
+        m_enableReConnect = false;
     }
 }

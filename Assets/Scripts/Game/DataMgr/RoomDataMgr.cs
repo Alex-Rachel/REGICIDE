@@ -171,6 +171,10 @@ class RoomDataMgr : DataCenterModule<RoomDataMgr>
         }
 
         Debug.Log(mainPack);
+
+        //UISys.Mgr.CloseWindow<GameWinUI>();
+        //UISys.Mgr.CloseWindow<GameLoseUI>();
+
         UISys.Mgr.CloseWindow<GameOnlineUI>();
 
         UISys.Mgr.CloseWindow<RoomWaitUI>();

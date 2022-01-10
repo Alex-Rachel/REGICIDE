@@ -67,20 +67,51 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         GameClient.Instance.RegActionHandle((int)ActionCode.Skill, SkillRes);
         GameClient.Instance.RegActionHandle((int)ActionCode.Damage, DamageRes);
         GameClient.Instance.RegActionHandle((int)ActionCode.Hurt, AbordRes);
+        GameClient.Instance.RegActionHandle((int)ActionCode.HeartBeat, HeardBeat);
+    }
+
+    private void HeardBeat(MainPack mainPack)
+    {
+
     }
 
     public int CurrentBossIndex = 0;
     public void InitGame(MainPack mainPack)
     {
-        CurrentBossIndex = 0;
-
         var roomPack = mainPack.Roompack[0];
+
+        if (mainPack.Str.Equals("RE"))
+        {
+            UISys.ShowTipMsg("重连成功");
+
+            LeftCardCount = roomPack.LeftCardCount;
+
+            var playerPack = mainPack.Roompack[0].ActorPack;
+
+            SetMuDiUsedCards(roomPack.MuDiCards);
+
+            CurrentGameIndex = roomPack.CurrentIndex;
+
+            foreach (var player in playerPack)
+            {
+                RefreshCardDataByActorId(player.ActorId, player.CuttrntCards);
+            }
+
+            Gamestate = roomPack.Gamestate.State;
+
+            if (BossActor!= null)
+            {
+                BossActor.Refresh(roomPack.BossActor);
+            }
+            EventCenter.Instance.EventTrigger("RefreshGameUI");
+            return;
+        }
+
+        CurrentBossIndex = 0;
 
         PlayerNum = roomPack.ActorPack.Count;
 
         Gamestate = roomPack.Gamestate.State;
-
-        //SetState(roomPack.Gamestate.State);
 
         CurrentGameIndex = roomPack.CurrentIndex;
 
@@ -177,6 +208,8 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
 
     public void AbordReq()
     {
+        GameClient.Instance.CheckReconnectInGames();
+
         if (CurrentGameIndex != MyGameIndex)
         {
             UISys.ShowTipMsg("当前阶段不是您出牌");
@@ -285,6 +318,11 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
     #region Attack
     public void AttackReq(bool choiceIndex = false,int index = 0)
     {
+        if (GameClient.Instance.CheckReconnectInGames())
+        {
+            return;
+        }
+
         if (choiceIndex)
         {
             MainPack mainPack_ = ProtoUtil.BuildMainPack(RequestCode.Game, ActionCode.Attack);
@@ -360,7 +398,12 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         {
             UISys.Mgr.ShowWindow<GameLoseUI>().InitUI("游戏失败，"+ playerPack[CurrentGameIndex].ActorName + "的牌不足以抵挡本次攻击！！");
         }
-       
+
+        if (mainPack.Str.Equals("GAMEWIN"))
+        {
+            UISys.Mgr.ShowWindow<GameLoseUI>().InitUI("游戏胜利！！！恭喜你们！！！");
+        }
+
         foreach (var player in playerPack)
         {
             RefreshCardDataByActorId(player.ActorId,player.CuttrntCards);
@@ -369,11 +412,7 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         Gamestate = roomPack.Gamestate.State;
         bool bossDie = BossActor.Refresh(roomPack.BossActor);
         EventCenter.Instance.EventTrigger("RefreshGameUI");
-        if (bossDie&&CurrentBossIndex>=13)
-        {
-            UISys.Mgr.ShowWindow<GameWinUI>();
-            return;
-        }
+
         if (bossDie)
         {
             CurrentBossBeJokerAtk = false;

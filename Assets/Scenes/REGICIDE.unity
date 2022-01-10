@@ -251,5 +251,5 @@ MonoBehaviour:
   payerNum: 0
   ConnectAuto: 0
   UseWebSocket: 1
-  IsGmMode: 0
-  hostPoint: 1
+  IsGmMode: 1
+  hostPoint: 0

@@ -7,8 +7,12 @@ import (
 	GameProto "Regicide/GameProto"
 	"errors"
 	"fmt"
+	"runtime"
+	"strconv"
+	"time"
 
 	"github.com/jinzhu/gorm"
+	"github.com/wonderivan/logger"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -98,7 +102,69 @@ func CheckLogin(mainpack *GameProto.MainPack, client *server.Client) bool {
 	client.ActorID = user.Roleid
 	client.Actor.ActorId = int32(user.Roleid)
 	client.Actor.ActorName = user.Name
+
+	CheckClientInRoom(client)
 	return true
+}
+
+//检查断线重连
+func CheckClientInRoom(client *server.Client) {
+	if client == nil {
+		return
+	}
+	roomCount := len(server.RoomList)
+	var isInRoom bool
+	for i := 0; i < roomCount; i++ {
+		room := server.RoomList[i]
+		if room == nil {
+			return
+		}
+		if !room.HadPlayerOutLine {
+			continue
+		}
+		clientCount := len(room.ClientList)
+		for i := 0; i < clientCount; i++ {
+			if client.ActorID == room.ClientList[i].ActorID {
+				room.OffLinePlayerCount--
+				room.OnlinePlayerCount++
+				if room.OffLinePlayerCount <= 0 {
+					room.HadPlayerOutLine = false
+				}
+				room.ClientList[i] = client
+				client.RoomInfo = room
+				//todo
+				isInRoom = true
+				room.SendMsg("您的队友重连成功", client)
+			}
+		}
+	}
+
+	if isInRoom {
+		go func() {
+			ticker := time.NewTimer(time.Second * 1)
+			<-ticker.C //阻塞，1秒以后继续执行
+			ticker.Stop()
+			room := client.RoomInfo
+			mainPack := &GameProto.MainPack{}
+			mainPack.Requestcode = GameProto.RequestCode_Room
+			mainPack.Actioncode = GameProto.ActionCode_StartGame
+			mainPack.Returncode = GameProto.ReturnCode_Success
+			for i := 0; i < len(room.ClientList); i++ {
+				_client := room.ClientList[i]
+				playerpack := &GameProto.PlayerPack{}
+				playerpack.Playername = _client.Username
+				playerpack.PlayerID = strconv.Itoa(int(_client.ActorID))
+				mainPack.Str = "RE"
+			}
+			mainPack.Roompack = append(mainPack.Roompack, room.RoomPack)
+			if len(mainPack.Roompack) >= 1 {
+				mainPack.Roompack[0].CurrentIndex = room.RoomPack.CurrentIndex
+			}
+			logger.Emer("room.RoomPack.CurrentIndex:", room.RoomPack.CurrentIndex)
+			client.Send(mainPack)
+			runtime.Goexit()
+		}()
+	}
 }
 
 func isUserExist(db *gorm.DB, userName string) bool {

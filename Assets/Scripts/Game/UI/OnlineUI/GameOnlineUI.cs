@@ -332,7 +332,7 @@ class GameOnlineUI : UIWindow
 
     private void RefreshInfo()
     {
-        m_textBossIndex.text = string.Format("当前Boss:{0},剩余:{1}",GameOnlineMgr.Instance.CurrentBossIndex,12- GameOnlineMgr.Instance.CurrentBossIndex);
+        m_textBossIndex.text = string.Format("当前Boss:{0},剩余:{1}",GameOnlineMgr.Instance.CurrentBossIndex,13- GameOnlineMgr.Instance.CurrentBossIndex);
         m_textPlayerIndex.text = string.Format("当前回合玩家:{0}", GameOnlineMgr.Instance.ActorPacks[GameOnlineMgr.Instance.CurrentGameIndex].ActorName);
 
         m_textLeft.text = string.Format("酒馆剩余:{0}", GameOnlineMgr.Instance.LeftCardCount);

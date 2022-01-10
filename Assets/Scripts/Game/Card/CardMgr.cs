@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class CardMgr:Singleton<CardMgr>{
     private Sprite[] m_sprites;
     private Dictionary<string,Sprite> m_spriteDic= new Dictionary<string, Sprite>();
+    public Sprite BigJoker;
     public CardMgr(){
         m_sprites = Resources.LoadAll<Sprite>("Images/card");
         for (int i = 0; i < m_sprites.Length; i++)
@@ -12,6 +13,8 @@ public class CardMgr:Singleton<CardMgr>{
             var sprite = m_sprites[i];
             m_spriteDic.Add(sprite.name,sprite);
         }
+
+        BigJoker = Resources.Load<Sprite>("Images/BigJoker");
     }
 
     public Sprite GetCardSprite(string name){

@@ -28,13 +28,6 @@ class CardListUI : UIWindow
         {
             cardLilst[i].Init(data[i]);
         }
-
-        //AdjustIconNum(cardLilst,54,m_tfContent,m_itemCard);
-        //m_itemCard.gameObject.SetActive(false);
-        //for (int i = 0; i < cardLilst.Count; i++)
-        //{
-        //    cardLilst[i].Init(i);
-        //}
     }
 
     #region 事件
@@ -159,6 +152,7 @@ class ItemCard : UIWindowWidget
                     break;
                 case CardType.RED_JOKER:
                     m_textInfo.text =("当前红桃和方块 <color=#FF0000>♥ ♦</color> 无效");
+                    m_imgIcon.sprite = CardMgr.Instance.BigJoker;
                     break;
                 case CardType.BLACK_JOKER:
                     m_textInfo.text = ("当前黑桃和草花 <color=#000000>♠ ♣</color> 无效");
@@ -230,6 +224,8 @@ class ItemCard : UIWindowWidget
         }
         if (m_isOnlieCards)
         {
+            UISys.ShowTipMsg("不能查看他人的牌哦~");
+            return;
             UISys.Mgr.ShowWindow<OtherListUI>().Init(m_onlineCardDatas);
             return;
         }

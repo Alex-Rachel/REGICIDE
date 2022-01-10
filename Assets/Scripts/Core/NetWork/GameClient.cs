@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
@@ -461,8 +462,59 @@ public class GameClient : Singleton<GameClient>
         return ret;
     }
 
+    public bool CheckReconnectInGames()
+    {
+        if (Status == GameClientStatus.StatusClose)
+        {
+            MonoManager.Instance.StartCoroutine(IEReconnect());
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private IEnumerator IEReconnect()
+    {
+        yield return new WaitForSeconds(1f);
+
+        UISys.ShowTipMsg("您的网络断开了");
+        if (m_UseWebSocket)
+        {
+            if (WebSocketMgr.Instance.webSocket == null)
+            {
+                WebSocketMgr.Instance.Init((() =>
+                {
+                    Status = GameClientStatus.StatusConnect;
+                    WebSocketMgr.Instance.ReconnectSuccessed();
+                    if (GameDataMgr.Instance.HadCacheLoginData())
+                    {
+                        var userId = PlayerPrefs.GetString("userId");
+                        var password = PlayerPrefs.GetString("password");
+                        GameDataMgr.Instance.LoginReq(userId, password);
+                    }
+                    else
+                    {
+                        UISys.Mgr.ShowWindow<GameLoginUI>();
+                    }
+
+                    if (GameClient.Instance.Status == GameClientStatus.StatusConnect)
+                    {
+                        UISys.ShowTipMsg("您已经连接到了服务器");
+                    }
+                }));
+            }
+        }
+    }
+
     private bool DoSendData(MainPack pack)
     {
+        if (Status == GameClientStatus.StatusClose)
+        {
+            MonoManager.Instance.StartCoroutine(IEReconnect());
+
+            return true;
+        }
 
         if (m_UseWebSocket)
         {
@@ -489,6 +541,13 @@ public class GameClient : Singleton<GameClient>
 
     public void Reconnect()
     {
+        if (m_UseWebSocket && Status == GameClientStatus.StatusClose)
+        {
+            MonoManager.Instance.StartCoroutine(IEReconnect());
+
+            return;
+        }
+
         Status = GameClientStatus.StatusReconnect;
 
         if (string.IsNullOrEmpty(m_Host) || m_Port <= 0)

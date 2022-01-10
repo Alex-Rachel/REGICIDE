@@ -7,9 +7,9 @@ sealed partial class GameApp
     public bool IsGmMode;
     public enum HostPoint
     {
-        LocalHost,
         LinuxServer,
         WinServer,
+        LocalHost,
     }
 
     public HostPoint hostPoint = HostPoint.LocalHost;
