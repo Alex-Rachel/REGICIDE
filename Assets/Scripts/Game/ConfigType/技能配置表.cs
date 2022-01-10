@@ -6,12 +6,12 @@
 
 // Generate From 技能配置表.xlsx
 
-public class 技能基础配置表
+public class SkillBaseConfig
 {
 	public int ID; // 技能ID
 	public string Name; // 技能名称
-	public int BuffID_1; // BuffID_1
-	public int BuffID_2; // BuffID_2
+	public int BuffIDArray; // BuffID数组
+	public string DescArray; // 描述数组
 }
 
 

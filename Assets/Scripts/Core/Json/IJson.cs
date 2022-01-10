@@ -5,7 +5,7 @@ using UnityEngine;
 public class DJsonData
 {
     private List<object> m_listData;
-    private Dictionary<string, object> m_dictData;
+    public Dictionary<string, object> m_dictData;
 
     public DJsonData()
     {

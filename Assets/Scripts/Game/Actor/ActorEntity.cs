@@ -10,22 +10,34 @@ using System.Threading.Tasks;
 /// </summary>
 public abstract class ActorEntity : Entity
 {
+    protected string m_actorName = string.Empty;
+
+    public uint ActorID { get; private set; }
+
+    public abstract ActorEntityType ActorType { get; }
+    public ActorEntitySide ActorEntitySide { get; private set; }
+    public ActorEntityCreateData CreateData { get; private set; }
 
     public bool IsDestroyed = false;
 
-    #region 事件封装
-    private ActorEntityEventDispatcher m_event;
-    internal ActorEntityEventDispatcher Event
+    public override string name
     {
-        get
-        {
-            if (m_event == null)
-            {
-                m_event = FMemPool<ActorEntityEventDispatcher>.Instance.Alloc();
-            }
-            return m_event;
-        }
+        get { return GetActorName(); }
     }
+
+    #region 事件封装
+    //private ActorEntityEventDispatcher m_event;
+    //internal ActorEntityEventDispatcher Event
+    //{
+    //    get
+    //    {
+    //        if (m_event == null)
+    //        {
+    //            m_event = FMemPool<ActorEntityEventDispatcher>.Instance.Alloc();
+    //        }
+    //        return m_event;
+    //    }
+    //}
     #endregion
 
     #region 组件封装
@@ -89,7 +101,7 @@ public abstract class ActorEntity : Entity
     {
         if (m_isDestroyAlling)
         {
-            FLogger.Debug("ActorEntity[{0}] is destroying, no need destroy cmpt anyway", name);
+            // FLogger.Debug("ActorEntity[{0}] is destroying, no need destroy cmpt anyway", name);
             return;
         }
 
@@ -99,7 +111,7 @@ public abstract class ActorEntity : Entity
         {
             cmpt.Destroy();
 
-            Event.RemoveAllListenerByOwner(cmpt);
+            // Event.RemoveAllListenerByOwner(cmpt);
             m_mapCmpt.Remove(className);
             m_listCmpt.Remove(cmpt);
 
@@ -128,12 +140,6 @@ public abstract class ActorEntity : Entity
 
         m_listCmpt.Add(cmpt);
         m_mapCmpt[GetClassName(typeof(T))] = cmpt;
-
-        ///触发一次事件
-        if (visual != null)
-        {
-            cmpt.OnVisualReady();
-        }
 
         return true;
     }
@@ -187,11 +193,6 @@ public abstract class ActorEntity : Entity
     {
         CreateData = createData;
 
-        if (createData.m_hasBornPos)
-        {
-            transform.SetInitPos(createData.m_bornPos, createData.m_bornForward);
-        }
-
         BaseInit();
         if (!OnCreate(createData))
         {
@@ -203,10 +204,6 @@ public abstract class ActorEntity : Entity
             return false;
         }
 
-        RefreshMoveColliderMask();
-        RefreshColliderVisible();
-
-        CreateVisual();
         for (int i = 0; i < m_listCmpt.Count; i++)
         {
             m_listCmpt[i].OnVisualReady();
@@ -228,19 +225,19 @@ public abstract class ActorEntity : Entity
 
     protected bool BaseAfterInit()
     {
-        SM = AddCmpt<ActorSM>();
 
         if (!OnInitActorAttr())
         {
-            BLogger.Error("OnInitActorAttr failed: {0}", name);
+            // BLogger.Error("OnInitActorAttr failed: {0}", name);
             return false;
         }
 
-        ActorData.RefreshAttr();
-        if (ActorData.HP == 0 && !IsDied)
-        {
-            SetInitHP();
-        }
+        // TODO 属性管理
+        //ActorData.RefreshAttr();
+        //if (ActorData.HP == 0 && !IsDied)
+        //{
+        //    SetInitHP();
+        //}
 
         InitInnerCmpt();
         return OnEnterMap();
@@ -255,4 +252,77 @@ public abstract class ActorEntity : Entity
     {
         SkillMgr = AddCmpt<SkillMgr>();
     }
+
+    #region 初始化接口
+
+    internal void SetBaseData(uint actorID, ActorEntitySide side)
+    {
+        ActorID = actorID;
+        ActorEntitySide = side;
+    }
+
+    #endregion
+
+    #region 扩展接口
+    protected virtual string GetActorName()
+    {
+        return m_actorName;
+    }
+
+    protected virtual bool OnCreate(ActorEntityCreateData createData)
+    {
+        return true;
+    }
+
+    protected virtual bool OnEnterMap()
+    {
+        return true;
+    }
+
+    /// <summary>
+    /// 初始化数值
+    /// </summary>
+    protected virtual bool OnInitActorAttr()
+    {
+        return true;
+    }
+    protected virtual void OnDestroy()
+    {
+    }
+
+    #endregion
+
+    internal void CallFixedUpdate()
+    {
+        if (IsDestroyed || m_isDestroyAlling)
+        {
+            return;
+        }
+
+        for (int i = 0; i < m_listCmpt.Count; i++)
+        {
+            var cmpt = m_listCmpt[i];
+
+            cmpt.CallFixedUpdate();
+        }
+    }
+
+    internal void Destroy()
+    {
+        if (IsDestroyed || m_isDestroyAlling)
+        {
+            return;
+        }
+
+        m_isDestroyAlling = true;
+
+        OnDestroy();
+
+        BeforeDestroyAllCmpt();
+        DestroyAllCmpt();
+
+        IsDestroyed = true;
+        m_isDestroyAlling = false;
+    }
+#endregion
 }
