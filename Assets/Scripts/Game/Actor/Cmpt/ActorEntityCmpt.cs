@@ -100,29 +100,34 @@ public class ActorEntityCmpt : IBattleContextHost
     #region Event操作函数
     public void AddEventListener(ActorEntityEventType eventType, Action eventCallback)
     {
-        m_actor.Event.AddEventListener(eventType, eventCallback, this);
+        // todo
+        // m_actor.Event.AddEventListener(eventType, eventCallback, this);
     }
 
     //回调带参数
     public void AddEventListener<T>(ActorEntityEventType eventType, Action<T> eventCallback)
     {
-        m_actor.Event.AddEventListener(eventType, eventCallback, this);
+        // todo
+        // m_actor.Event.AddEventListener(eventType, eventCallback, this);
     }
 
     //回调带参数
     public void AddEventListener<T, U>(ActorEntityEventType eventType, Action<T, U> eventCallback)
     {
-        m_actor.Event.AddEventListener(eventType, eventCallback, this);
+        // todo
+        // m_actor.Event.AddEventListener(eventType, eventCallback, this);
     }
 
     public void AddEventListener<T, U, V>(ActorEntityEventType eventType, Action<T, U, V> eventCallback)
     {
-        m_actor.Event.AddEventListener(eventType, eventCallback, this);
+        // todo
+        // m_actor.Event.AddEventListener(eventType, eventCallback, this);
     }
 
     public void AddEventListener<T, U, V, S>(ActorEntityEventType eventType, Action<T, U, V, S> eventCallback)
     {
-        m_actor.Event.AddEventListener(eventType, eventCallback, this);
+        // todo
+        // m_actor.Event.AddEventListener(eventType, eventCallback, this);
     }
 
     #endregion
