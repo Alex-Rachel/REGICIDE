@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using BestHTTP.JSON;
+using MiniJSON;
 using UnityEngine;
 
 
@@ -13,7 +14,7 @@ class ResConfigUtil
 
     public static Dictionary<string, T> ReadConfigRes<T>(string fileName)
     {
-        string resPath = "Config/ResBin/" + fileName;
+        string resPath = "Config/" + fileName;
         TextAsset jsonStr = Resources.Load<TextAsset>(resPath);
         if (jsonStr == null)
         {
@@ -22,7 +23,8 @@ class ResConfigUtil
         }
 
         Dictionary<string, T> dic = new Dictionary<string, T>();
-        dic = (Dictionary<string, T>)Json.Decode(jsonStr.text);
+        DJsonData obj = JsonHelper.Deserialize(jsonStr.text);
+        //var list = (List<T>)Json.Decode(jsonStr.text);
         return dic;
     }
 
