@@ -41,6 +41,7 @@ class ItemCard : UIWindowWidget
     private CardData m_cardData;
     private bool m_choice;
     public bool CouldChoice = true;
+    protected string m_clickSound = "PlayCard";
     #region 脚本工具生成的代码
     private Image m_imgIcon;
     private GameObject m_goSelect;
@@ -73,6 +74,24 @@ class ItemCard : UIWindowWidget
         m_textCardCount = FindChildComponent<Text>("m_textCardCount");
     }
     #endregion
+
+
+    private bool m_setSound = false;
+    protected override void OnVisible()
+    {
+        base.OnVisible();
+
+        if (m_setSound)
+        {
+            return;
+        }
+        m_setSound = true;
+        var uiButtonSound = m_btnChoice.gameObject.GetComponent<UIButtonSound>();
+        if (uiButtonSound != null)
+        {
+            uiButtonSound.m_clickSound = m_clickSound;
+        }
+    }
 
     #region 事件
     /// <summary>

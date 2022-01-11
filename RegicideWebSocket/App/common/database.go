@@ -42,6 +42,8 @@ func InitDB() *gorm.DB {
 	db.AutoMigrate(&model.NormalRank{})
 	db.AutoMigrate(&model.HardRank{})
 	db.AutoMigrate(&model.VeryHardRank{})
+	db.AutoMigrate(&model.HunRank{})
+	db.AutoMigrate(&model.OnlineRank{})
 	DB = db
 	return db
 }

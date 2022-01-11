@@ -28,4 +28,9 @@ public class UIButtonSound : MonoBehaviour, IPointerClickHandler
     {
         s_playSoundAction += onClick;
     }
+
+    public void SetClickSound(string sound)
+    {
+        m_clickSound = sound;
+    }
 }

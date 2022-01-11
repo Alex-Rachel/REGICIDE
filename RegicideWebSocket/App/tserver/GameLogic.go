@@ -1,6 +1,8 @@
 package tserver
 
 import (
+	"Regicide/App/common"
+	"Regicide/App/model"
 	GameProto "Regicide/GameProto"
 	"errors"
 	"math/rand"
@@ -123,7 +125,7 @@ func (client *Client) TurnCardDiamond(number int) {
 	logger.Emer("Index", myIndex)
 	continueCount := 0
 	for {
-		if i > turnCount || continueCount > turnCount {
+		if i > turnCount || continueCount > 2*turnCount {
 			break
 		}
 		if i > len(room.MyCardList)-1 {
@@ -255,8 +257,8 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 		atk = 20
 		hp = 40
 	} else if cardData.IsJoker && cardData.CardType == 6 {
-		atk = 30
-		hp = 55
+		atk = 25
+		hp = 50
 	} else {
 		atk = 30
 		hp = 50
@@ -345,6 +347,7 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 	} else if bossActor.Hp == 0 && bossActor.ActorId != 53 {
 		cardData := InstanceCardData(int(bossActor.ActorId))
 		room.MyCardList = append(room.MyCardList, &cardData)
+		room.RoomPack.MuDiCards = room.UsedCardList
 
 		cache := []*CardData{&cardData}
 		temp := append(cache, room.MyCardList...)
@@ -378,10 +381,47 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 			mainpack.Returncode = GameProto.ReturnCode_Success
 			mainpack.Str = "游戏胜利！！！"
 			room.Broadcast(mainpack)
+
+			PostOnlineWinRank(room)
 		}
 	}
 	logger.Debug("bossActor:", bossActor)
 	return bossDie
+}
+
+func PostOnlineWinRank(room *Room) {
+	roomWinTime := time.Now().Unix()
+
+	totalTime := roomWinTime - room.RoomStartTime
+
+	if room == nil {
+		return
+	}
+	if room.ClientList == nil {
+		return
+	}
+
+	clients := room.ClientList
+
+	clientCount := len(clients)
+
+	var names string
+	for i := 0; i < clientCount; i++ {
+		client := clients[i]
+		if client == nil {
+			continue
+		}
+
+		if i != clientCount-1 {
+			names += client.ActorName + ","
+		} else {
+			names += client.ActorName
+		}
+	}
+
+	onlineRank := &model.OnlineRank{WinTime: totalTime, Usersname: names}
+
+	common.DB.Create(onlineRank)
 }
 
 func GenAttackData(cardData []*GameProto.CardData) AttackData {

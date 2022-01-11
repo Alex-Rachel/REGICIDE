@@ -54,9 +54,9 @@ public class AudioMgr : Singleton<AudioMgr>
             GameObject obj = new GameObject();
             obj.name = "bgAudio";
             bgAudio = obj.AddComponent<AudioSource>();
-            Object.DontDestroyOnLoad(obj);
+            GameObject.DontDestroyOnLoad(obj);
         }
-        ResourcesManager.Instance.LoadAsync<AudioClip>("Audio/BG/" + name, (clip) =>
+        ResourcesManager.Instance.LoadAsync<AudioClip>("Audio/" + name, (clip) =>
         {
             bgAudio.clip = clip;
             bgAudio.volume = bgValue;
@@ -111,7 +111,7 @@ public class AudioMgr : Singleton<AudioMgr>
         {
             soundList.Remove(audioSource);
             audioSource.Stop();
-            Object.Destroy(audioSource);
+            GameObject.Destroy(audioSource);
         }
     }
 
@@ -132,7 +132,7 @@ public class AudioMgr : Singleton<AudioMgr>
         {
             if (!soundList[i].isPlaying)
             {
-                Object.Destroy(soundList[i]);
+                GameObject.Destroy(soundList[i]);
                 soundList.RemoveAt(i);
             }
         }

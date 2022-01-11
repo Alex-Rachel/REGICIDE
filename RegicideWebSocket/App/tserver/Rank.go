@@ -73,6 +73,31 @@ func GetRankList(ctx *gin.Context) {
 				},
 			})
 		}
+	case "6":
+		{
+			var ranks []model.HunRank
+			common.DB.Find(&ranks)
+			response.Success(ctx, gin.H{"ranks": ranks}, "Info success")
+			ctx.JSON(http.StatusOK, gin.H{
+				"code": 200,
+				"data": gin.H{
+					"ranks": ranks,
+				},
+			})
+		}
+	case "7":
+		{
+			var ranks []model.OnlineRank
+			common.DB.Find(&ranks)
+			response.Success(ctx, gin.H{"ranks": ranks}, "Online")
+			ctx.JSON(http.StatusOK, gin.H{
+				"code": 200,
+				"data": gin.H{
+					"online": 1,
+					"ranks":  ranks,
+				},
+			})
+		}
 	}
 }
 
@@ -294,6 +319,49 @@ func PostRankData(ctx *gin.Context) {
 					{
 						tongCount := dbRank.TongCount + 1
 						common.DB.Model(&dbRank).Update(model.VeryHardRank{TongCount: tongCount})
+					}
+				}
+			}
+		}
+	case "6":
+		{
+			var dbRank model.HunRank
+			common.DB.Where("Roleid = ?", userId).Find(&dbRank)
+			if dbRank.Roleid == 0 {
+				intuserId, _ := strconv.Atoi(userId)
+				switch completeType {
+				case "1":
+					{
+						dbRank := &model.HunRank{Roleid: intuserId, Username: userName, GoldCount: 1, YinCount: 0, TongCount: 0}
+						common.DB.Create(dbRank)
+					}
+				case "2":
+					{
+						dbRank := &model.HunRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 1, TongCount: 0}
+						common.DB.Create(dbRank)
+					}
+				case "3":
+					{
+						dbRank := &model.HunRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 0, TongCount: 1}
+						common.DB.Create(dbRank)
+					}
+				}
+			} else {
+				switch completeType {
+				case "1":
+					{
+						goldCount := dbRank.GoldCount + 1
+						common.DB.Model(&dbRank).Update(model.HunRank{GoldCount: goldCount})
+					}
+				case "2":
+					{
+						yinCount := dbRank.YinCount + 1
+						common.DB.Model(&dbRank).Update(model.HunRank{YinCount: yinCount})
+					}
+				case "3":
+					{
+						tongCount := dbRank.TongCount + 1
+						common.DB.Model(&dbRank).Update(model.HunRank{TongCount: tongCount})
 					}
 				}
 			}

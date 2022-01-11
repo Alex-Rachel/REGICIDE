@@ -57,9 +57,37 @@ public class RankDataMgr : Singleton<RankDataMgr>
 
         var rankData = jsonData.GetJsonDataByKey("data");
 
+        var msg = jsonData.GetStringDataByKey("msg");
+
         var ranks = rankData.GetJsonDataByKey("ranks");
 
+        bool online = msg.Equals("Online");
+
         var count = ranks.ArrayCount;
+
+        if (online)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                var data = ranks.GetJsonDataByIndex(i);
+
+                RankDatas.Add(new RankData(data,true));
+
+                RankDatas.Sort((a, b) =>
+                {
+                    if (a.time > b.time)
+                    {
+                        return 1;
+                    }
+                    else
+                    {
+                        return -1;
+                    }
+                });
+            }
+            EventCenter.Instance.EventTrigger("RefreshRankList", RankDatas);
+            return;
+        }
 
         for (int i = 0; i < count; i++)
         {
@@ -115,6 +143,8 @@ public class RankDataMgr : Singleton<RankDataMgr>
 
 public class RankData
 {
+    public bool isOnline;
+    public long time;
     public string name;
     public int GoldCount;
     public int YinCount;
@@ -125,5 +155,12 @@ public class RankData
         GoldCount = jsonData.GetIntDataByKey("GoldCount");
         YinCount = jsonData.GetIntDataByKey("YinCount");
         TongCount = jsonData.GetIntDataByKey("TongCount");
+    }
+
+    public RankData(DJsonData jsonData,bool onlineFlag)
+    {
+        isOnline = onlineFlag;
+        name = jsonData.GetStringDataByKey("Usersname");
+        time = jsonData.GetInt64DataByKey("WinTime");
     }
 }

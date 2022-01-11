@@ -103,6 +103,23 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
             {
                 BossActor.Refresh(roomPack.BossActor);
             }
+            else
+            {
+                var bossActorPack_ = roomPack.BossActor;
+
+                BossActor = ActorMgr.Instance.InstanceBossActor(bossActorPack_.ActorId);
+
+                BossActor.Atk = bossActorPack_.ATK;
+
+                BossActor.Hp = bossActorPack_.Hp;
+            }
+
+            ActorPacks = roomPack.ActorPack.ToList();
+
+            LeftCardCount = roomPack.LeftCardCount;
+
+            InitCards();
+
             EventCenter.Instance.EventTrigger("RefreshGameUI");
             return;
         }
@@ -206,6 +223,7 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         return GetCardDataByActorId(actorId);
     }
 
+    private bool m_abording;
     public void AbordReq()
     {
         GameClient.Instance.CheckReconnectInGames();
@@ -267,7 +285,15 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         roomPack.ActorPack.Add(actorPack);
         mainPack.Roompack.Add(roomPack);
 
+        if (m_abording)
+        {
+            UISys.ShowTipMsg("正在弃牌中");
+            return;   
+        }
+
         GameClient.Instance.SendCSMsg(mainPack);
+
+        m_abording = true;
     }
 
     public RegicideProtocol.CardData InstanceCardData(global::CardData cardData)
@@ -283,6 +309,8 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
     private void AbordRes(MainPack mainPack)
     {
         GameMgr.Instance.m_choiceList.Clear();
+
+        m_abording = false;
 
         var roomPack = mainPack.Roompack[0];
         CurrentGameIndex = roomPack.CurrentIndex;
@@ -316,6 +344,8 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
     }
 
     #region Attack
+
+    private bool m_attacking = false;
     public void AttackReq(bool choiceIndex = false,int index = 0)
     {
         if (GameClient.Instance.CheckReconnectInGames())
@@ -369,12 +399,22 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         roomPack.ActorPack.Add(actorPack);
         mainPack.Roompack.Add(roomPack);
 
+        if (m_attacking)
+        {
+            UISys.ShowTipMsg("正在攻击中");
+            return;
+        }
+
         GameClient.Instance.SendCSMsg(mainPack);
+        AudioMgr.Instance.PlaySound("AttackBoss");
+        m_attacking = true;
     }
 
     private void AttackRes(MainPack mainPack)
     {
         GameMgr.Instance.m_choiceList.Clear();
+
+        m_attacking = false;
 
         if (ChekJoker(mainPack))
         {
@@ -483,12 +523,13 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
 
     public void SetMuDiUsedCards(RepeatedField<RegicideProtocol.CardData> list)
     {
-        MuDiCardDatas.Clear();
 
         if (list == null || list.Count < 0)
         {
             return;
         }
+
+        MuDiCardDatas.Clear();
 
         for (int i = 0; i < list.Count; i++)
         {

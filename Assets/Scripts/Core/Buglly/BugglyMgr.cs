@@ -12,10 +12,18 @@ public class BugglyMgr : Singleton<BugglyMgr>
 
     void LogCallback(string condition, string stackTrace, LogType type)
     {
+#if !UNITY_EDITOR
         if (type == LogType.Exception || type == LogType.Error)
         {
             Push(string.Format("报错啦,请截图发QQ群761857971{0}\n{1}", condition, stackTrace));
         }
+#else
+        if (type == LogType.Exception)
+        {
+            Push(string.Format("报错啦,请截图发QQ群761857971{0}\n{1}", condition, stackTrace));
+        }
+#endif
+
     }
 
     public new void OnInit()

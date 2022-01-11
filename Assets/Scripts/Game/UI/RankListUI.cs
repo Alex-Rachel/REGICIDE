@@ -35,7 +35,7 @@ class RankListUI : UIWindow
         m_itemLevel.gameObject.SetActive(false);
         m_itemRank.gameObject.SetActive(false);
         RankDataMgr.Instance.GetRankDatas(rankIndex);
-        AdjustIconNum(m_levels, 5, m_tfLevel, m_itemLevel);
+        AdjustIconNum(m_levels, 7, m_tfLevel, m_itemLevel);
         for (int i = 0; i < m_levels.Count; i++)
         {
             m_levels[i].Init(i+1);
@@ -113,8 +113,24 @@ class ItemRank : UIWindowWidget
     public void Init(RankData data,int rankIndex)
     {
         m_textUserName.text = data.name;
-        m_textNum.text = String.Format("<color=#FFC200>金奖:{0}</color> <color=#FFF2C7>银奖:{1}</color> <color=#B09544>铜奖:{2}</color>", data.GoldCount,data.YinCount,data.TongCount);
         m_textRankIndex.text = rankIndex.ToString();
+
+        if (data.isOnline)
+        {
+            var timeSpan = TimeSpan.FromSeconds(data.time);
+
+            if (timeSpan.Days > 0)
+            {
+                m_textNum.text = string.Format("<color=#FFC200>通关时间:{0}{1:D2}:{2:D2}:{3:D2}", string.Format("{0}天</color>", timeSpan.Days),
+                    timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+            }
+            else
+            {
+                m_textNum.text = string.Format("<color=#FFC200>通关时间:{0:D2}:{1:D2}:{2:D2}</color>", timeSpan.Hours, timeSpan.Minutes, timeSpan.Seconds);
+            }
+            return;
+        }
+        m_textNum.text = String.Format("<color=#FFC200>金奖:{0}</color> <color=#FFF2C7>银奖:{1}</color> <color=#B09544>铜奖:{2}</color>", data.GoldCount,data.YinCount,data.TongCount);
     }
 
     #region 事件
@@ -169,6 +185,16 @@ class ItemRankLevel : UIWindowWidget
             case 5:
             {
                 m_textLevel.text = "地狱";
+                break;
+            }
+            case 6:
+            {
+                m_textLevel.text = "魂";
+                break;
+            }
+            case 7:
+            {
+                m_textLevel.text = "联机";
                 break;
             }
         }

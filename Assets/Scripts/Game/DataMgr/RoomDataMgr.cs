@@ -138,6 +138,11 @@ class RoomDataMgr : DataCenterModule<RoomDataMgr>
             return;
         }
 
+        if (GameOnlineMgr.Instance.IsOnlineGameIng)
+        {
+            return;
+        }
+
         UISys.Mgr.CloseWindow<StartUI>();
         UISys.Mgr.CloseWindow<StartUILand>();
         UISys.Mgr.CloseWindow<RoomUI>();

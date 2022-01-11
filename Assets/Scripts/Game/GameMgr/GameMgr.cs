@@ -546,6 +546,8 @@ partial class GameMgr : Singleton<GameMgr>
 
         m_choiceList.Clear();
 
+        AudioMgr.Instance.PlaySound("AttackBoss");
+
         EventCenter.Instance.EventTrigger("RefreshGameUI");
     }
 
@@ -585,7 +587,8 @@ partial class GameMgr : Singleton<GameMgr>
                 
             }
         }
-        
+
+        //AudioMgr.Instance.PlaySound("Hurt");
         Debug.Log("Hurt:" + value);
         m_needAbordValue = value;
     }

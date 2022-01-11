@@ -138,6 +138,7 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 		}
 		if currentCardsValue < client.RoomInfo.RoomPack.BossActor.ATK && !bossDie {
 			gameLose = true
+			logger.Emer("监控GAMELOSE:currentCardsValue:", currentCardsValue, "BossActor.ATK", client.RoomInfo.RoomPack.BossActor.ATK)
 			client.RoomInfo.ISGAMELOSE = true
 		}
 	}

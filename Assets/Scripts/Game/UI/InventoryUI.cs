@@ -42,12 +42,14 @@ class InventoryUI : UIWindowWidget
         if (GameMgr.Instance.IsLandScape)
         {
             UISys.Mgr.CloseWindow<GameUI>();
+            UISys.Mgr.ShowWindow<StartUI>();
+
         }
         else
         {
             UISys.Mgr.CloseWindow<GameUILand>();
+            UISys.Mgr.ShowWindow<StartUILand>();
         }
-        UISys.Mgr.ShowWindow<StartUI>();
     }
     private void OnClickSettingBtn()
     {

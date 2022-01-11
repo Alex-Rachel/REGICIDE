@@ -32,6 +32,7 @@ type Room struct {
 	ISGAMEWIN  bool
 
 	HadPlayerOutLine bool
+	RoomStartTime    int64
 }
 
 type BossActor struct {
@@ -42,6 +43,10 @@ type BossActor struct {
 	CardInt   int32
 	CardValue int32
 	CardType  int32
+}
+
+func (room *Room) GetRoomStartTime() {
+	room.RoomStartTime = time.Now().Unix()
 }
 
 func InstanceRoom(roomPack *GameProto.RoomPack) Room {

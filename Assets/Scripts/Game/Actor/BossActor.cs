@@ -8,9 +8,9 @@ public class BossActor : GameActor
 
     public int MaxHp { private set; get; }
 
-    public int Hp { private set; get; }
+    public int Hp;
 
-    public int Atk { private set; get; }
+    public int Atk;
 
     public bool JokerAtk { private set; get; }
 

@@ -61,3 +61,5 @@ crashlytics-build.properties
 
 RegicideServer/config/
 RegicideServer/.vscode/settings.json
+
+*settings.json
