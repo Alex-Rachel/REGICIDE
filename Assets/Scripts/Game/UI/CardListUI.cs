@@ -56,6 +56,11 @@ class ItemCard : UIWindowWidget
     private Text m_textInfo;
     private Image m_imgHp;
     private Text m_textCardCount;
+
+    private GameObject m_goBoss;
+    private Image m_imgCardValue;
+    private Image m_imgCardType;
+    private Image m_imgBoss;
     protected override void ScriptGenerator()
     {
         m_imgIcon = FindChildComponent<Image>("m_imgIcon");
@@ -72,6 +77,15 @@ class ItemCard : UIWindowWidget
         m_textInfo = FindChildComponent<Text>("m_goCardInfo/m_goInfo/m_InfoBlock/m_textInfo");
         m_imgHp = FindChildComponent<Image>("m_goCardInfo/m_goHp/m_bg/m_imgHp");
         m_textCardCount = FindChildComponent<Text>("m_textCardCount");
+
+        var bosstf = FindChild("m_goBoss");
+        if (bosstf != null)
+        {
+            m_goBoss = bosstf.gameObject;
+            m_imgCardValue = FindChildComponent<Image>("m_goBoss/m_imgCardValue");
+            m_imgCardType = FindChildComponent<Image>("m_goBoss/m_imgCardType");
+            m_imgBoss = FindChildComponent<Image>("m_goBoss/m_imgBoss");
+        }
     }
     #endregion
 
@@ -150,8 +164,17 @@ class ItemCard : UIWindowWidget
         m_cardData = actor.cardData;
         m_imgIcon.sprite = m_cardData.sprite;
         m_choice = false;
+        m_goBoss?.SetActive(false);
         Refresh();
-        gameObject.transform.localScale = new Vector3(2, 2, 2);
+
+        if (GameMgr.Instance.IsLandScape)
+        {
+            gameObject.transform.localScale = new Vector3(2, 2, 2);
+        }
+        else
+        {
+            gameObject.transform.localScale = new Vector3(3, 3, 3);
+        }
 
         if (m_textInfo!=null)
         {
@@ -177,6 +200,110 @@ class ItemCard : UIWindowWidget
                     m_textInfo.text = ("当前黑桃和草花 <color=#000000>♠ ♣</color> 无效");
                     break;
             }
+        }
+
+        if (m_goBoss != null && (m_cardData.cardType != CardType.RED_JOKER) && (m_cardData.cardType != CardType.BLACK_JOKER))
+        {
+            m_goBoss.SetActive(true);
+            m_imgIcon.gameObject.SetActive(false);
+
+            var str = "BOSS" + ((CardValue)actor.cardData.CardValue).ToString() + actor.cardType.ToString()[0];
+            m_imgBoss.sprite = CardMgr.Instance.GetCardSprite(str);
+            m_imgBoss.SetNativeSize();
+            m_imgBoss.transform.localScale = new Vector2(0.22f, 0.22f);
+
+            switch (m_cardData.cardType)
+            {
+                case CardType.SPADE:
+                    m_imgCardType.sprite = CardMgr.Instance.GetCardSprite("S");
+                    switch ((CardValue)actor.cardData.CardValue)
+                    {
+                        case CardValue.J:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("JB");
+                                break;
+                        }
+                        case CardValue.Q:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("QB");
+                                break;
+                        }
+                        case CardValue.K:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("KB");
+                                break;
+                        }
+                    }
+                    break;
+                case CardType.DIAMOND:
+                    m_imgCardType.sprite = CardMgr.Instance.GetCardSprite("D");
+                    switch ((CardValue)actor.cardData.CardValue)
+                    {
+                        case CardValue.J:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("JR");
+                            break;
+                        }
+                        case CardValue.Q:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("QR");
+                            break;
+                        }
+                        case CardValue.K:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("KR");
+                            break;
+                        }
+                    }
+                    break;
+                case CardType.CLUB:
+                    m_imgCardType.sprite = CardMgr.Instance.GetCardSprite("C");
+                    switch ((CardValue)actor.cardData.CardValue)
+                    {
+                        case CardValue.J:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("JB");
+                            break;
+                        }
+                        case CardValue.Q:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("QB");
+                            break;
+                        }
+                        case CardValue.K:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("KB");
+                            break;
+                        }
+                    }
+                    break;
+                case CardType.HEART:
+                    m_imgCardType.sprite = CardMgr.Instance.GetCardSprite("H");
+                    switch ((CardValue)actor.cardData.CardValue)
+                    {
+                        case CardValue.J:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("JR");
+                            break;
+                        }
+                        case CardValue.Q:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("QR");
+                            break;
+                        }
+                        case CardValue.K:
+                        {
+                            m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("KR");
+                            break;
+                        }
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            m_goBoss.gameObject.SetActive(false);
+            m_imgIcon.gameObject.SetActive(true);
         }
 
         if (GameOnlineMgr.Instance.CurrentBossBeJokerAtk)

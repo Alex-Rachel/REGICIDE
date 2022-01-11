@@ -170,9 +170,19 @@ partial class GameMgr : Singleton<GameMgr>
         while (!complete)
         {
             Random ran = new Random((int)DateTime.Now.Ticks + randCount);
+
+            if (m_myList.Count <= 0)
+            {
+                complete = true;
+                break;
+            }
+
             var idx = ran.Next(0, m_myList.Count - 1);
+
             var card = m_myList[idx];
+            
             bool hadCard = false;
+            
             for (int i = 0; i < temp.Count; i++)
             {
                 if (temp[i].CardInt == card.CardInt)
@@ -197,15 +207,6 @@ partial class GameMgr : Singleton<GameMgr>
                 complete = true;
             }
         }
-
-        //for (int i = 0; i < count; i++)
-        //{
-        //    Random ran = new Random((int)DateTime.Now.Ticks+i);
-        //    var idx = ran.Next(0, m_myList.Count - 1);
-        //    var card = m_myList[idx];
-        //    temp.Add(card);
-        //}
-
         return temp;
     }
 

@@ -15,6 +15,14 @@ public class CardMgr:Singleton<CardMgr>{
         }
 
         BigJoker = Resources.Load<Sprite>("Images/BigJoker");
+
+
+        var bossSprite = Resources.LoadAll<Sprite>("Images/Boss/");
+        for (int i = 0; i < bossSprite.Length; i++)
+        {
+            var sprite = bossSprite[i];
+            m_spriteDic.Add(sprite.name, sprite);
+        }
     }
 
     public Sprite GetCardSprite(string name){

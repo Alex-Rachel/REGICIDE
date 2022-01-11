@@ -114,6 +114,8 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
                 BossActor.Hp = bossActorPack_.Hp;
             }
 
+            //CurrentBossIndex = roomPack.
+
             ActorPacks = roomPack.ActorPack.ToList();
 
             LeftCardCount = roomPack.LeftCardCount;
