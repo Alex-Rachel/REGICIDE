@@ -202,16 +202,27 @@ class ItemCard : UIWindowWidget
             }
         }
 
-        if (m_goBoss != null && (m_cardData.cardType != CardType.RED_JOKER) && (m_cardData.cardType != CardType.BLACK_JOKER))
+        if (m_goBoss != null && /*(m_cardData.cardType != CardType.RED_JOKER) && */(m_cardData.cardType != CardType.BLACK_JOKER))
         {
             m_goBoss.SetActive(true);
             m_imgIcon.gameObject.SetActive(false);
+
+            if (m_cardData.cardType == CardType.RED_JOKER)
+            {
+                var strBoss = "BOSSBIGJOKER";
+                m_imgBoss.sprite = CardMgr.Instance.GetCardSprite(strBoss);
+                m_imgBoss.SetNativeSize();
+                m_imgBoss.transform.localScale = new Vector2(0.3f, 0.3f);
+                m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("Joker");
+                m_imgCardType.gameObject.SetActive(false);
+                return;
+            }
 
             var str = "BOSS" + ((CardValue)actor.cardData.CardValue).ToString() + actor.cardType.ToString()[0];
             m_imgBoss.sprite = CardMgr.Instance.GetCardSprite(str);
             m_imgBoss.SetNativeSize();
             m_imgBoss.transform.localScale = new Vector2(0.22f, 0.22f);
-
+            m_imgCardValue.gameObject.SetActive(true);
             switch (m_cardData.cardType)
             {
                 case CardType.SPADE:

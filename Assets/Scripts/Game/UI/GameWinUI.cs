@@ -62,6 +62,7 @@ class GameWinUI : UIWindow
         else
         {
             UISys.Mgr.CloseWindow<GameOnlineUI>();
+            UISys.Mgr.CloseWindow<GameOnlineUILand>();
             //UISys.Mgr.ShowWindow<RoomWaitUI>();
             RoomDataMgr.Instance.ExitRoomReq();
             //UISys.Mgr.ShowWindow<RoomUI>();

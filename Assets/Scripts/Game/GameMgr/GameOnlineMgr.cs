@@ -433,12 +433,11 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
 
         UISys.Mgr.ShowWindow<GameOnlineTips>(UI_Layer.Top).ShowTip("玩家" + playerPack[CurrentGameIndex].ActorName + "打出卡牌", roomPack.CurrentUseCards);
 
-        CurrentGameIndex = roomPack.CurrentIndex;
 
 
         if (mainPack.Str.Equals("GAMELOSE"))
         {
-            UISys.Mgr.ShowWindow<GameLoseUI>().InitUI("游戏失败，"+ playerPack[CurrentGameIndex].ActorName + "的牌不足以抵挡本次攻击！！");
+            UISys.Mgr.ShowWindow<GameLoseUI>().InitUI("游戏失败，"+ playerPack[roomPack.CurrentIndex].ActorName + "的牌不足以抵挡本次攻击！！");
         }
 
         if (mainPack.Str.Equals("GAMEWIN"))
@@ -453,17 +452,20 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
 
         Gamestate = roomPack.Gamestate.State;
         bool bossDie = BossActor.Refresh(roomPack.BossActor);
-        EventCenter.Instance.EventTrigger("RefreshGameUI");
 
         if (bossDie)
         {
             CurrentBossBeJokerAtk = false;
-            UISys.ShowTipMsg(string.Format("当前{0}号玩家{1}击败boss，直接进入阶段一", CurrentGameIndex, playerPack[CurrentGameIndex].ActorName));
+            UISys.ShowTipMsg(string.Format("{0}号玩家{1}击败boss，下一位玩家{2}直接进入阶段一", CurrentGameIndex, playerPack[CurrentGameIndex].ActorName, playerPack[roomPack.CurrentIndex].ActorName) );
         }
         else
         {
-            UISys.ShowTipMsg(string.Format("当前{0}号玩家{1}攻击结束，请弃点数{2}的牌！", CurrentGameIndex, playerPack[CurrentGameIndex].ActorName, BossActor.Atk));
+            UISys.ShowTipMsg(string.Format("当前{0}号玩家{1}攻击结束，请弃点数{2}的牌！", roomPack.CurrentIndex, playerPack[roomPack.CurrentIndex].ActorName, BossActor.Atk));
         }
+
+        CurrentGameIndex = roomPack.CurrentIndex;
+
+        EventCenter.Instance.EventTrigger("RefreshGameUI");
     }
 
     public bool CurrentBossBeJokerAtk;

@@ -156,6 +156,11 @@ public class WebSocketMgr : UnitySingleton<WebSocketMgr>
                 webSocket = null;
             }
         }
+
+        if (Input.GetKeyDown(KeyCode.F1))
+        {
+            UISys.Mgr.ShowWindow<GameGMUI>();
+        }
 #endif
         if (m_useReconnect && !m_enableReConnect)
         {

@@ -60,9 +60,19 @@ class RoomDataMgr : DataCenterModule<RoomDataMgr>
 
         UISys.Mgr.CloseWindow<RoomWaitUI>();
 
-        var ui = UISys.Mgr.ShowWindow<GameOnlineUI>();
+        if (GameMgr.Instance.IsLandScape)
+        {
+            var ui = UISys.Mgr.ShowWindow<GameOnlineUI>();
 
-        ui.Init(mainPack);
+            ui.Init(mainPack);
+        }
+        else
+        {
+            var ui = UISys.Mgr.ShowWindow<GameOnlineUILand>();
+
+            ui.Init(mainPack);
+        }
+    
     }
 
     public void FindRoomReq()
@@ -181,6 +191,7 @@ class RoomDataMgr : DataCenterModule<RoomDataMgr>
         //UISys.Mgr.CloseWindow<GameLoseUI>();
 
         UISys.Mgr.CloseWindow<GameOnlineUI>();
+        UISys.Mgr.CloseWindow<GameOnlineUILand>();
 
         UISys.Mgr.CloseWindow<RoomWaitUI>();
 

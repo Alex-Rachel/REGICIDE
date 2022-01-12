@@ -77,7 +77,7 @@ partial class GameMgr : Singleton<GameMgr>
     public BossActor BossActor;
     private List<CardData> m_totalList = new List<CardData>(TotalCardNum);  //总牌堆
     private List<CardData> m_curList = new List<CardData>();                //手卡
-    private List<CardData> m_myList = new List<CardData>(TotalCardNum);     //可抽卡
+    public List<CardData> m_myList = new List<CardData>(TotalCardNum);     //可抽卡
     public List<CardData> m_useList = new List<CardData>(TotalCardNum);    //墓地
     private List<CardData> m_bossList = new List<CardData>();                       //boss堆
     public List<CardData> m_choiceList = new List<CardData>();                     //当前回合选择的卡
@@ -162,6 +162,10 @@ partial class GameMgr : Singleton<GameMgr>
 
     public List<CardData> RandTurnCards()
     {
+        if (m_myList.Count <= 0)
+        {
+            return new List<CardData>();
+        }
         var randomCardNum = 4;
         var count = m_myList.Count < randomCardNum ? m_myList.Count : randomCardNum;
         var temp = new List<CardData>();
@@ -171,13 +175,14 @@ partial class GameMgr : Singleton<GameMgr>
         {
             Random ran = new Random((int)DateTime.Now.Ticks + randCount);
 
-            if (m_myList.Count <= 0)
+            if (temp.Count >= m_myList.Count)
             {
+                Debug.Log("修复成功");
                 complete = true;
                 break;
             }
 
-            var idx = ran.Next(0, m_myList.Count - 1);
+            var idx = ran.Next(0, m_myList.Count);
 
             var card = m_myList[idx];
             
@@ -204,6 +209,11 @@ partial class GameMgr : Singleton<GameMgr>
             randCount++;
             if (temp.Count >= count)
             {
+                complete = true;
+            }
+            if (randCount >= 200)
+            {
+                Debug.LogError("死循环了傻逼");
                 complete = true;
             }
         }

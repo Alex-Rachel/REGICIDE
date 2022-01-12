@@ -141,6 +141,20 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 			logger.Emer("监控GAMELOSE:currentCardsValue:", currentCardsValue, "BossActor.ATK", client.RoomInfo.RoomPack.BossActor.ATK)
 			client.RoomInfo.ISGAMELOSE = true
 		}
+	} else {
+		//没有出牌
+		var currentCardsValue int32
+		for i := 0; i < len(client.Actor.CuttrntCards); i++ {
+			if client.Actor.CuttrntCards[i].CardType == GameProto.CardType_JOKER || int(client.Actor.CuttrntCards[i].CardType) == 6 {
+				continue
+			}
+			currentCardsValue += client.Actor.CuttrntCards[i].CardValue
+		}
+		if currentCardsValue < client.RoomInfo.RoomPack.BossActor.ATK {
+			gameLose = true
+			logger.Emer("监控GAMELOSE:currentCardsValue:", currentCardsValue, "BossActor.ATK", client.RoomInfo.RoomPack.BossActor.ATK)
+			client.RoomInfo.ISGAMELOSE = true
+		}
 	}
 
 	mainpack = &GameProto.MainPack{}

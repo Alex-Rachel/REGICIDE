@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	print("START REGICIDE SERVER")
+	print("START REGICIDE SERVER v1.1.2")
 	InitConfig()
 	InitDatabase()
 	InitControllers()
