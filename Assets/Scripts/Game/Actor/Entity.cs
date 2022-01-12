@@ -16,6 +16,10 @@ abstract public class Entity : IBattleContextHost
     public abstract string name { get; }
 
 
+    public Entity()
+    {
+        m_context = null;
+    }
     public Entity(BattleContext context)
     {
         InitEntity(context);

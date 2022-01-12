@@ -3,6 +3,10 @@
 @SET EXE=..\Tools\excel2json\excel2json.exe
 @SET CsharpPath=..\Assets\Scripts\Game\ConfigType
 
+@ECHO Del old Config...
+del %JSON_FOLDER% /S /Q
+del %CsharpPath% /S /Q 
+
 @ECHO Converting excel files in folder %EXCEL_FOLDER% ...
 for /f "delims=" %%i in ('dir /b /a-d /s %EXCEL_FOLDER%\*.xlsx') do (
     @echo   processing %%~nxi 

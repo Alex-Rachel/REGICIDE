@@ -1,23 +1,22 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LitJson;
 
 public class JsonHelper : Singleton<JsonHelper>
 {
-    private JsonImp jsonImp;
-
     public JsonHelper()
     {
-        jsonImp = new JsonImp();
+        
     }
 
-    public DJsonData Deserialize(string json)
+    public T Deserialize<T>(string json)
     {
-        return jsonImp.Deserialize(json);
+        return JsonMapper.ToObject<T>(json);
     }
 
-    public string Serialize(DJsonData jsonData)
+    public string Serialize(Object jsonData)
     {
-        return jsonImp.Serialize(jsonData);
+        return JsonMapper.ToJson(jsonData);
     }
 }

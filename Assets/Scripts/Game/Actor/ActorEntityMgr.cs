@@ -198,14 +198,14 @@ public class ActorEntityCreateData
         return createData;
     }
 
-    //internal static ActorEntityCreateData CreateMonsterCreateData(uint monsterID, ActorEntitySide side)
-    //{
-    //    var createData = new ActorEntityCreateData();
-    //    createData.m_actorType = ActorEntityType.eMonster;
-    //    createData.m_side = side;
-    //    createData.m_monsterID = monsterID;
-    //    return createData;
-    //}
+    internal static ActorEntityCreateData CreateMonsterCreateData(uint monsterID, ActorEntitySide side)
+    {
+        var createData = new ActorEntityCreateData();
+        createData.m_actorType = ActorEntityType.eMonster;
+        createData.m_side = side;
+        createData.m_monsterID = monsterID;
+        return createData;
+    }
 
     //internal static ActorEntityCreateData CreateMonsterCreateData(MonsterCreateParam param, ActorEntitySide side)
     //{
