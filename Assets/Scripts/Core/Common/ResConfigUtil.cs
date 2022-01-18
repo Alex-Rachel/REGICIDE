@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using BestHTTP.JSON;
 using LitJson;
 using UnityEngine;
@@ -7,6 +8,8 @@ using UnityEngine;
 
 class ResConfigUtil
 {
+    private static StringBuilder m_strBuilder = new StringBuilder();
+    private static readonly string m_split = "_";
     #region 读取接口
 
     public static Dictionary<string, T> ReadConfigRes<T>(string fileName)
@@ -56,17 +59,31 @@ class ResConfigUtil
 
     public static string MakeStringKey(uint key1, uint key2, uint key3)
     {
-        return key1 + "_" + key2 + "_" + key3;
+        m_strBuilder.Length = 0;
+        m_strBuilder.Append(key1);
+        m_strBuilder.Append(m_split);
+        m_strBuilder.Append(key2);
+        m_strBuilder.Append(m_split);
+        m_strBuilder.Append(key3);
+        return m_strBuilder.ToString();
     }
 
     public static string MakeStringKey(string key1, uint key2)
     {
-        return key1 + "_" + key2;
+        m_strBuilder.Length = 0;
+        m_strBuilder.Append(key1);
+        m_strBuilder.Append(m_split);
+        m_strBuilder.Append(key2);
+        return m_strBuilder.ToString();
     }
 
     public static string MakeStringKey(string key1, string key2)
     {
-        return key1 + "_" + key2;
+        m_strBuilder.Length = 0;
+        m_strBuilder.Append(key1);
+        m_strBuilder.Append(m_split);
+        m_strBuilder.Append(key2);
+        return m_strBuilder.ToString();
     }
 }
 

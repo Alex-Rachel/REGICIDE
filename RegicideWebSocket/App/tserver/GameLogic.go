@@ -100,7 +100,7 @@ func (client *Client) AddHp(number int) {
 
 // 方块抽卡
 func (client *Client) TurnCardDiamond(number int) {
-	logger.Emer("client Username:", client.Username, "TurnCardDiamond number=>", number)
+	// logger.Emer("client Username:", client.Username, "TurnCardDiamond number=>", number)
 	room := client.RoomInfo
 	turnCount := number
 	if turnCount == 0 {
@@ -122,7 +122,7 @@ func (client *Client) TurnCardDiamond(number int) {
 	}
 	i := 0
 	index := myIndex
-	logger.Emer("Index", myIndex)
+	// logger.Emer("Index", myIndex)
 	continueCount := 0
 	for {
 		if i > turnCount || continueCount > 2*turnCount {
@@ -140,14 +140,13 @@ func (client *Client) TurnCardDiamond(number int) {
 			continueCount++
 			continue
 		}
-		logger.Emer("Username:", room.ClientList[index].Username, "抽到手中：", i, "玩家：", index, "continueCount：", continueCount)
+		// logger.Emer("Username:", room.ClientList[index].Username, "抽到手中：", i, "玩家：", index, "continueCount：", continueCount)
 		cardData := room.MyCardList[i]
 		room.MyCardList = RemoveCard(room.MyCardList, cardData)
 		cardProtoData := &GameProto.CardData{CardInt: int32(cardData.CardInt), CardValue: int32(cardData.CardValue)}
 		room.ClientList[index].Actor.CuttrntCards = append(room.ClientList[index].Actor.CuttrntCards, cardProtoData)
 		i++
 		index++
-		logger.Emer("index", index)
 	}
 	client.RoomInfo.RoomPack.LeftCardCount = int32(len(room.MyCardList))
 }
@@ -227,13 +226,10 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 
 	cacheListCount := len(cacheList)
 
-	logger.Emer("监控:cacheList", cacheList, "监控:cacheList.count:", cacheListCount)
-
 	var index int
-
-	if cacheListCount <= 0 {
+	if cacheListCount <= 0 || room.CURRENT_BOSS_INDEX >= 13 {
 		room.ISGAMEWIN = true
-		logger.Emer("监控有问题！！！:cacheList", cacheList, "监控:cacheList.count:", cacheListCount)
+		// logger.Emer("监控有问题！！！:cacheList", cacheList, "监控:cacheList.count:", cacheListCount)
 		index = 0
 		return nil
 	} else {
@@ -267,6 +263,7 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 	room.CurrentBossBeJokerAtk = false
 	bossActor := &GameProto.ActorPack{ATK: atk, Hp: hp, ActorId: int32(cardData.CardInt), Index: int32(room.CURRENT_BOSS_INDEX), ActorJob: int32(((cardData.CardInt) / 13) + 1)}
 	room.RoomPack.BossActor = bossActor
+	logger.Debug("监控CURRENT BossActor:", bossActor)
 	return bossActor
 }
 
@@ -363,7 +360,7 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 			room.RoomPack.MuDiCards = room.UsedCardList
 		}
 		room.CurrentAttackCardList = room.CurrentAttackCardList[0:0]
-		if room.CURRENT_BOSS_INDEX <= 13 {
+		if room.CURRENT_BOSS_INDEX < 13 {
 			room.InitBoss()
 			if room.ISGAMEWIN {
 				mainpack := &GameProto.MainPack{}
@@ -372,6 +369,7 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 				mainpack.Returncode = GameProto.ReturnCode_Success
 				mainpack.Str = "游戏胜利！！！"
 				room.Broadcast(mainpack)
+				PostOnlineWinRank(room)
 			}
 		} else {
 			logger.Debug("GAME WIN")
@@ -385,7 +383,6 @@ func ImpactSkill(client *Client, bossActor *GameProto.ActorPack, attackData Atta
 			PostOnlineWinRank(room)
 		}
 	}
-	logger.Debug("bossActor:", bossActor)
 	return bossDie
 }
 
@@ -413,9 +410,9 @@ func PostOnlineWinRank(room *Room) {
 		}
 
 		if i != clientCount-1 {
-			names += client.ActorName + ","
+			names += client.Username + ","
 		} else {
-			names += client.ActorName
+			names += client.Username
 		}
 	}
 

@@ -7,19 +7,9 @@ sealed partial class GameApp : UnitySingleton<GameApp>
 {
     public int TargetFrameRate = 300;
 
-    public PlayerNum payerNum = PlayerNum.One;
-
     public bool UseWebSocket;
 
     public bool UseBuggly;
-
-    public enum PlayerNum
-    {
-        One,
-        Two,
-        Three,
-        Four,
-    }
 
     public override void Awake()
     {

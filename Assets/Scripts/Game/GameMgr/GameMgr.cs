@@ -16,8 +16,6 @@ partial class GameMgr : Singleton<GameMgr>
     }
 
     #region 属性
-    public int PlayerNum;
-
     /// <summary>
     /// 是否是横屏
     /// </summary>
@@ -59,7 +57,7 @@ partial class GameMgr : Singleton<GameMgr>
     {
         get
         {
-            return 8 - PlayerNum + 1;
+            return 8;
         }
     }
 
@@ -79,6 +77,7 @@ partial class GameMgr : Singleton<GameMgr>
     private List<CardData> m_curList = new List<CardData>();                //手卡
     public List<CardData> m_myList = new List<CardData>(TotalCardNum);     //可抽卡
     public List<CardData> m_useList = new List<CardData>(TotalCardNum);    //墓地
+    public List<CardData> m_CurrentAttacksList = new List<CardData>(TotalCardNum);    //当前回合攻击过的Cards
     private List<CardData> m_bossList = new List<CardData>();                       //boss堆
     public List<CardData> m_choiceList = new List<CardData>();                     //当前回合选择的卡
     private List<CardData> m_choiceRandomList = new List<CardData>();
@@ -88,11 +87,8 @@ partial class GameMgr : Singleton<GameMgr>
     public void Init()
     {
         RegiserEvent();
-        PlayerNum = (int)GameApp.Instance.payerNum + 1;
-
         InitTotalCards();
         InitMyCards();
-        
     }
 
     private void RegiserEvent()
@@ -254,7 +250,6 @@ partial class GameMgr : Singleton<GameMgr>
             {
                 if (m_choiceList[i].IsJoker)
                 {
-                    //UISys.ShowTipMsg("Joker无法遗弃！！！");
                     if (LeftJokerCount>0)
                     {
                         LeftJokerCount--;
@@ -317,8 +312,6 @@ partial class GameMgr : Singleton<GameMgr>
             m_myList.Add(card);
         }
 
-        //RandomSort(m_myList);
-
         for (int i = 0; i < count; i++)
         {
             var card = m_useList[0];
@@ -327,7 +320,7 @@ partial class GameMgr : Singleton<GameMgr>
     }
     #endregion
 
-    #region 新模式
+    #region 新模式(换牌/调度模式)
 
     private bool startNewMode;
     public void StartNewMode()
@@ -413,15 +406,15 @@ partial class GameMgr : Singleton<GameMgr>
                 UISys.ShowTipMsg("你劝服了这位君主！");
                 m_myList.Insert(0,BossActor.cardData);
             }
-            //m_curList.Add(BossActor.cardData);
             InitBoss();
         }
         else
         {
+            UISys.ShowTipMsg("你击杀了这位君主！");
+            m_useList.Insert(0, BossActor.cardData);
             InitBoss();
         }
-
-        
+        EventCenter.Instance.EventTrigger("RefreshGameUI");
     }
     #endregion
 
@@ -724,7 +717,6 @@ partial class GameMgr : Singleton<GameMgr>
                 var temp = list[i];
                 list[i] = list[index];
                 list[index] = temp;
-                //(list[i], list[index]) = (list[i], list[index]);
             }
         }
     }
@@ -789,11 +781,6 @@ partial class GameMgr : Singleton<GameMgr>
         string str = String.Empty;
         stateMsgDic.TryGetValue(_state, out str);
         return str;
-    }
-
-    public void EndGame()
-    {
-        SetState(GameState.NONE);
     }
 
     public int GameLevel = 0;

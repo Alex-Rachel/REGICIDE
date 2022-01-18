@@ -29,7 +29,7 @@ func StartServer(port string) Server {
 
 func Start(server Server) {
 	CreateRoom("断剑重铸之日")
-	print("START REGICIDE SERVER")
+	logger.Info("START REGICIDE SERVER")
 	r := gin.Default()
 	f, _ := os.Create("log/regicide.log")
 	gin.DefaultWriter = io.MultiWriter(f)
@@ -64,17 +64,17 @@ func handleClient(conn *websocket.Conn, uniid uint32) {
 	client := InstanceClient(conn, uniid)
 	ClientList, _ = AddClient(client)
 	for {
-		messagetype, message, err := conn.ReadMessage()
+		_, message, err := conn.ReadMessage()
 		if err != nil {
 			logger.Debug(" conn.Read error", err)
 			RemoveClient(client)
 			break
 		}
-		logger.Debug("messagetype:", messagetype, "   message:", message)
+		// logger.Debug("messagetype:", messagetype, "   message:", message)
 		buffCount := len(message)
 		err2 := GetDataCenter().handBuffer(client, message[4:buffCount])
 		if err2 != nil {
-			logger.Debug("handBuffer error", err2)
+			// logger.Debug("handBuffer error", err2)
 			RemoveClient(client)
 			break
 		}

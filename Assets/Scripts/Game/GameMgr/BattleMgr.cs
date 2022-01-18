@@ -95,7 +95,6 @@ public class BattleMgr : Singleton<BattleMgr>
     {
         if (attackData.HadJoker)
         {
-            //EventCenter.Instance.EventTrigger("BeJokerAtk"); 
             GameMgr.Instance.TurnJokerCard();
             GameMgr.Instance.SetState(GameMgr.GameState.STATEONE);
             EventCenter.Instance.EventTrigger("RefreshGameUI");

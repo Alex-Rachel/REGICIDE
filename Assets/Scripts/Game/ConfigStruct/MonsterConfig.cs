@@ -6,6 +6,8 @@
 
 // Generate From MonsterConfig.xlsx
 
+using System.Collections.Generic;
+
 public class MonsterBaseConfig
 {
 	public int ID; // ID

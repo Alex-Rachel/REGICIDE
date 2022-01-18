@@ -142,6 +142,7 @@ func (room *Room) StartGame(client *Client) {
 	room.RoomPack.Gamestate = gameState
 	room.RoomPack.State = 1
 
+	room.GetRoomStartTime()
 	room.GetFirstIndex()
 	room.InitCards()
 	room.InitMyCards()
