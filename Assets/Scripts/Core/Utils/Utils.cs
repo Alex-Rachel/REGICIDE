@@ -1,4 +1,6 @@
-﻿using RegicideProtocol;
+﻿using System;
+using System.Collections;
+using RegicideProtocol;
 using System.Collections.Generic;
 using Google.Protobuf.Collections;
 using UnityEngine;
@@ -7,9 +9,9 @@ public static class Utils
 {
     public static string ToColor(this string str, string colorStr)
     {
-        if (string.IsNullOrEmpty(str))
+        if (!string.IsNullOrEmpty(str))
         {
-            str = string.Format("<color=#{0}>{1}</color >",colorStr,str);
+            str = string.Format("<color=#{0}>{1}</color>",colorStr,str);
         }
         return str; 
     }
@@ -87,5 +89,11 @@ public static class Utils
         }
 
         return list;
+    }
+
+    public static IEnumerator Wait(float second = 1.0f,Action callBack = null)
+    {
+        yield return new WaitForSeconds(second);
+        callBack?.Invoke();
     }
 }

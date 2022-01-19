@@ -1,7 +1,7 @@
 @SET EXCEL_FOLDER=xls
 @SET JSON_FOLDER=..\Assets\Resources\Config
 @SET EXE=..\Tools\excel2json\excel2json.exe
-@SET CsharpPath=..\Assets\Scripts\Game\ConfigType
+@SET CsharpPath=..\Assets\Scripts\Game\ConfigStruct
 
 @ECHO Del old Config...
 del %JSON_FOLDER% /S /Q

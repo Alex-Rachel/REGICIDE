@@ -53,11 +53,13 @@ partial class GameMgr : Singleton<GameMgr>
         }
     }
     public const int TotalCardNum = 54;
+
+    private int m_maxCardNum = 8;
     public int MyMaxCardNum
     {
         get
         {
-            return 8;
+            return m_maxCardNum;
         }
     }
 
@@ -266,16 +268,32 @@ partial class GameMgr : Singleton<GameMgr>
             }
         }
 
-        int myValue = 0;
+        int point = 0;
 
         foreach (var card in m_choiceList)
         {
-            myValue += card.CardPower;
+            if (card.CardValue == 11)
+            {
+                point += 10;
+            }
+            else if (card.CardValue == 12)
+            {
+                point += 15;
+            }
+            else if (card.CardValue == 13)
+            {
+                point += 20;
+            }
+            else
+            {
+                point += card.CardPower;
+            }
         }
 
-        if (myValue < m_needAbordValue)
+        if (point < m_needAbordValue)
         {
             UISys.ShowTipMsg(string.Format("您需要遗弃:{0}点数的牌",m_needAbordValue));
+            UISys.ShowTipMsg(string.Format("弃牌点数还差{0}点", m_needAbordValue - point));
             return;
         }
 
@@ -341,9 +359,7 @@ partial class GameMgr : Singleton<GameMgr>
     public void InitBoss()
     {
         var currentBoss = TotalKillBossCount;
-
         var cardData = m_bossList[0];
-
         BossActor = ActorMgr.Instance.InstanceBossActor(cardData);
         EventCenter.Instance.EventTrigger("RefreshBoss", BossActor);
         EventCenter.Instance.EventTrigger("BossDataRefresh", BossActor);
@@ -414,6 +430,11 @@ partial class GameMgr : Singleton<GameMgr>
             m_useList.Insert(0, BossActor.cardData);
             InitBoss();
         }
+
+        //Boss死亡后当场攻击的卡进墓地
+        m_useList.AddRange(m_CurrentAttacksList);
+        m_CurrentAttacksList.Clear();
+
         EventCenter.Instance.EventTrigger("RefreshGameUI");
     }
     #endregion
@@ -544,7 +565,8 @@ partial class GameMgr : Singleton<GameMgr>
 
             if (!card.IsJoker)
             {
-                m_useList.Add(card);
+                //m_useList.Add(card);
+                m_CurrentAttacksList.Add(card);
             }
         }
 
@@ -588,7 +610,6 @@ partial class GameMgr : Singleton<GameMgr>
                 TurnJokerCard();
                 LeftJokerCount--;
                 EventCenter.Instance.EventTrigger("RefreshGameUI");
-                
             }
         }
 
@@ -758,6 +779,9 @@ partial class GameMgr : Singleton<GameMgr>
         m_stateIndex = (int)state;
         UISys.ShowTipMsg("当前阶段:" + GetCurrentStateStr());
         EventCenter.Instance.EventTrigger("UpdateGameState");
+
+        BossActor?.HandleBuff();
+
         if (gameState == GameState.STATEONE)
         {
             if (m_curList.Count <= 0 && LeftJokerCount <= 0)
@@ -783,6 +807,7 @@ partial class GameMgr : Singleton<GameMgr>
         return str;
     }
 
+    public bool Roguelike = false;
     public int GameLevel = 0;
     public void RestartGame()
     {
@@ -791,6 +816,7 @@ partial class GameMgr : Singleton<GameMgr>
 
         TotalKillBossCount = 0;
         LeftJokerCount = 2;
+        Roguelike = false;
         switch (GameLevel)
         {
             case 1:
@@ -808,18 +834,21 @@ partial class GameMgr : Singleton<GameMgr>
             case 5:
                 NeedKillBossCount = 14;
                 break;
+            case 10:
+                Roguelike = true;
+                NeedKillBossCount = 14;
+                break;
         }
-        //UISys.ShowTipMsg("重新开始！！");
         
         InitTotalCards();
         InitMyCards();
         m_curList.Clear();
         m_useList.Clear();
         m_choiceList.Clear();
-        
+        m_CurrentAttacksList.Clear();
+
         InitBoss();
         TurnCard();
-        SetState(GameState.STATEONE);
         EventCenter.Instance.EventTrigger("RefreshGameUI");
         EventCenter.Instance.EventTrigger("GameStart");
     }

@@ -13,6 +13,7 @@ class InventoryUI : UIWindowWidget
     private Button m_btnRank;
     private Button m_btnLeft;
     private Button m_btnRight;
+    private Button m_btnGM;
     protected override void ScriptGenerator()
     {
         m_tfInventoryList = FindChild("m_tfInventoryList");
@@ -24,6 +25,7 @@ class InventoryUI : UIWindowWidget
         m_btnRank = FindChildComponent<Button>("m_tfInventoryList/m_btnRank");
         m_btnLeft = FindChildComponent<Button>("m_btnLeft");
         m_btnRight = FindChildComponent<Button>("m_btnRight");
+        m_btnGM = FindChildComponent<Button>("m_tfInventoryList/m_btnGM");
         m_btnBack.onClick.AddListener(OnClickBackBtn);
         m_btnSetting.onClick.AddListener(OnClickSettingBtn);
         m_btnRestart.onClick.AddListener(OnClickRestartBtn);
@@ -32,7 +34,26 @@ class InventoryUI : UIWindowWidget
         m_btnRank.onClick.AddListener(OnClickRankBtn);
         m_btnLeft.onClick.AddListener(OnClickLeftBtn);
         m_btnRight.onClick.AddListener(OnClickRightBtn);
+        m_btnGM.onClick.AddListener((() =>
+        {
+            UISys.Mgr.ShowWindow<GameGMUI>();
+        }));
     }
+
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        var userId = PlayerPrefs.GetString("userId");
+        if (userId == "574809918" || userId == "222")
+        {
+            m_btnGM.gameObject.Show(true);
+        }
+        else
+        {
+            m_btnGM.gameObject.Show(false);
+        }
+    }
+
     #endregion
 
     #region 事件
@@ -42,11 +63,13 @@ class InventoryUI : UIWindowWidget
         if (GameMgr.Instance.IsLandScape)
         {
             UISys.Mgr.CloseWindow<GameUI>();
+            UISys.Mgr.CloseWindow<GameUILand>();
             UISys.Mgr.ShowWindow<StartUI>();
 
         }
         else
         {
+            UISys.Mgr.CloseWindow<GameUI>();
             UISys.Mgr.CloseWindow<GameUILand>();
             UISys.Mgr.ShowWindow<StartUILand>();
         }

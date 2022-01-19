@@ -244,9 +244,8 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         List<global::CardData> list = GameMgr.Instance.m_choiceList;
 
         var point = 0;
-        for (int i = 0; i < list.Count; i++)
+        foreach (var card in list)
         {
-            var card = list[i];
             if (card.cardType == CardType.BLACK_JOKER || card.cardType == CardType.RED_JOKER)
             {
                 continue;
@@ -265,7 +264,7 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
             }
             else
             {
-                point += list[i].CardValue;
+                point += card.CardValue;
             }
         }
 

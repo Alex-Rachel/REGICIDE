@@ -37,6 +37,10 @@ sealed partial class GameApp : UnitySingleton<GameApp>
 
     IEnumerator StartGame()
     {
+        var config = FeatureConfigMgr.Instance.GetFeatureBaseConfig();
+
+        //var config2 = MonsterConfigMgr.Instance.GetMonsterConfig(1001);
+        
         yield return new WaitForSeconds(0.3f);
         if (GameMgr.Instance.IsLandScape)
         {

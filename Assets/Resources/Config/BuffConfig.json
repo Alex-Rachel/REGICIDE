@@ -1,0 +1,106 @@
+{
+  "1001": {
+    "BuffID": 1001,
+    "BuffType": 0,
+    "BuffValue": 0.5,
+    "BuffValue2": 0,
+    "BuffName": "伤害增加",
+    "HandleState": 0
+  },
+  "1002": {
+    "BuffID": 1002,
+    "BuffType": 1,
+    "BuffValue": 0.5,
+    "BuffValue2": 0,
+    "BuffName": "生命值增加",
+    "HandleState": 0
+  },
+  "1003": {
+    "BuffID": 1003,
+    "BuffType": 3,
+    "BuffValue": 0.1,
+    "BuffValue2": 0,
+    "BuffName": "恢复",
+    "HandleState": 1
+  },
+  "1004": {
+    "BuffID": 1004,
+    "BuffType": 0,
+    "BuffValue": -0.3,
+    "BuffValue2": 0,
+    "BuffName": "伤害降低",
+    "HandleState": 0
+  },
+  "1005": {
+    "BuffID": 1005,
+    "BuffType": 1,
+    "BuffValue": -0.3,
+    "BuffValue2": 0,
+    "BuffName": "生命值降低",
+    "HandleState": 0
+  },
+  "1006": {
+    "BuffID": 1006,
+    "BuffType": 2,
+    "BuffValue": 5,
+    "BuffValue2": 0,
+    "BuffName": "伤害增加固定值",
+    "HandleState": 0
+  },
+  "1007": {
+    "BuffID": 1007,
+    "BuffType": 4,
+    "BuffValue": 0.6,
+    "BuffValue2": 0,
+    "BuffName": "冲锋",
+    "HandleState": 1
+  },
+  "1008": {
+    "BuffID": 1008,
+    "BuffType": 5,
+    "BuffValue": 10,
+    "BuffValue2": 0,
+    "BuffName": "威压",
+    "HandleState": 2
+  },
+  "1009": {
+    "BuffID": 1009,
+    "BuffType": 6,
+    "BuffValue": 0.4,
+    "BuffValue2": 0,
+    "BuffName": "威压倍率",
+    "HandleState": 2
+  },
+  "1010": {
+    "BuffID": 1010,
+    "BuffType": 7,
+    "BuffValue": 0.1,
+    "BuffValue2": 0,
+    "BuffName": "荆棘",
+    "HandleState": 4
+  },
+  "1011": {
+    "BuffID": 1011,
+    "BuffType": 8,
+    "BuffValue": 5,
+    "BuffValue2": 0,
+    "BuffName": "回复",
+    "HandleState": 1
+  },
+  "1012": {
+    "BuffID": 1012,
+    "BuffType": 9,
+    "BuffValue": 0,
+    "BuffValue2": 0,
+    "BuffName": "不屈",
+    "HandleState": 3
+  },
+  "1013": {
+    "BuffID": 1013,
+    "BuffType": 10,
+    "BuffValue": 1,
+    "BuffValue2": 0,
+    "BuffName": "凋零",
+    "HandleState": 2
+  }
+}

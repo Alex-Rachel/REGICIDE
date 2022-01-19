@@ -69,6 +69,20 @@ class GameGMUI : UIWindow
                     break;
             }
         }
+        else
+        {
+            if (strs[0].Equals("GMON"))
+            {
+                GameApp.Instance.IsGmMode = true;
+                UISys.ShowTipMsg("开启GMMODE");
+            }
+
+            if (strs[0].Equals("GMOFF"))
+            {
+                GameApp.Instance.IsGmMode = false;
+                UISys.ShowTipMsg("关闭GMMODE");
+            }
+        }
     }
     #endregion
 

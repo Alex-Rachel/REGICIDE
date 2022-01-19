@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 class LevelChoiceUI : UIWindow
 {
+    private List<ItemLevel> m_Speciallist = new List<ItemLevel>();
     private List<ItemLevel> m_list = new List<ItemLevel>();
     #region 脚本工具生成的代码
     private GameObject m_itemLevel;
@@ -34,6 +35,14 @@ class LevelChoiceUI : UIWindow
         {
             m_list[i].Init(i);
         }
+
+
+        AdjustIconNum(m_Speciallist, 1, m_tfLevelSpecial, m_itemLevel);
+        for (int i = 0; i < m_Speciallist.Count; i++)
+        {
+            m_Speciallist[i].Init(9);
+        }
+
         m_itemLevel.gameObject.SetActive(false);
     }
 
@@ -114,9 +123,14 @@ class ItemLevel : UIWindowWidget
                     m_textNum.text = "7+7";
                     break;
                 }
-        }
 
-        
+            case 10:
+            {
+                m_textRoomInfo.text = "Roguelike";
+                m_textNum.text = "?";
+                    break;
+            }
+        }
     }
 
     private void Choice()

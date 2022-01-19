@@ -26,14 +26,27 @@ class GameWinUI : UIWindow
     protected override void OnCreate()
     {
         base.OnCreate();
+        var rankIndex = GameMgr.Instance.GameLevel;
+
         if (GameDataMgr.Instance.HadLogin && !GameOnlineMgr.Instance.IsOnlineGameIng)
         {
             m_btnPushRank.gameObject.SetActive(false);
-            var rankIndex = GameMgr.Instance.GameLevel;
-            var userId = GameOnlineMgr.Instance.MyActorId;
-            var completeType = -GameMgr.Instance.LeftJokerCount + 3;
-            RankDataMgr.Instance.PushRankData(rankIndex, userId, completeType);
+            if (rankIndex >= 3 )
+            {
+                var userId = GameOnlineMgr.Instance.MyActorId;
+                var completeType = -GameMgr.Instance.LeftJokerCount + 3;
+                RankDataMgr.Instance.PushRankData(rankIndex, userId, completeType);
+            }
         }
+
+        if (!GameDataMgr.Instance.HadLogin)
+        {
+            if (rankIndex < 3)
+            {
+                m_btnPushRank.gameObject.SetActive(false);
+            }
+        }
+
         if (!GameOnlineMgr.Instance.IsOnlineGameIng)
         {
             m_btnLeave.gameObject.Show(false);
@@ -63,9 +76,7 @@ class GameWinUI : UIWindow
         {
             UISys.Mgr.CloseWindow<GameOnlineUI>();
             UISys.Mgr.CloseWindow<GameOnlineUILand>();
-            //UISys.Mgr.ShowWindow<RoomWaitUI>();
             RoomDataMgr.Instance.ExitRoomReq();
-            //UISys.Mgr.ShowWindow<RoomUI>();
         }
     }
     private void OnClickPushRankBtn()

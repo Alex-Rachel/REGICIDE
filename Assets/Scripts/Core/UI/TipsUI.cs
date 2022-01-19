@@ -30,7 +30,7 @@ public class TipsUI : MonoBehaviour
     {
         AvailablePool = new List<GameObject>();
         UsedPool = new List<GameObject>();
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 8; i++)
         {
             AvailablePool.Add(Instantiate(Prefab, Mask.transform));
             AvailablePool[i].SetActive(false);

@@ -1,0 +1,137 @@
+{
+  "1001": {
+    "ID": 1001,
+    "Name": "冲锋",
+    "BuffIDArray": [
+      1007
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF0000",
+    "Rate": 10,
+    "Desc": "君主入场即攻击"
+  },
+  "1002": {
+    "ID": 1002,
+    "Name": "刚毅",
+    "BuffIDArray": [
+      1012
+    ],
+    "UseColor": 1,
+    "ColorStr": "FFD200",
+    "Rate": 10,
+    "Desc": "非感化会受到君主伤害"
+  },
+  "1003": {
+    "ID": 1003,
+    "Name": "疯狂",
+    "BuffIDArray": [
+      0,
+      0
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF00F0",
+    "Rate": 10,
+    "Desc": "君主无法被感化"
+  },
+  "1004": {
+    "ID": 1004,
+    "Name": "再生",
+    "BuffIDArray": [
+      1003
+    ],
+    "UseColor": 1,
+    "ColorStr": "13FF00",
+    "Rate": 10,
+    "Desc": "回合开始恢复10%最大血量"
+  },
+  "1005": {
+    "ID": 1005,
+    "Name": "穿刺",
+    "BuffIDArray": [
+      1006
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF0000",
+    "Rate": 10,
+    "Desc": "增加50%伤害"
+  },
+  "1006": {
+    "ID": 1006,
+    "Name": "凋零",
+    "BuffIDArray": [
+      1013
+    ],
+    "UseColor": 0,
+    "ColorStr": "F",
+    "Rate": 10,
+    "Desc": "每打出1张牌，必须丢弃1张"
+  },
+  "1007": {
+    "ID": 1007,
+    "Name": "威压",
+    "BuffIDArray": [
+      1008
+    ],
+    "UseColor": 0,
+    "ColorStr": "F",
+    "Rate": 10,
+    "Desc": "抵挡10以上的伤害"
+  },
+  "1008": {
+    "ID": 1008,
+    "Name": "强壮",
+    "BuffIDArray": [
+      1002
+    ],
+    "UseColor": 1,
+    "ColorStr": "FFD200",
+    "Rate": 10,
+    "Desc": "增加生命值"
+  },
+  "1009": {
+    "ID": 1009,
+    "Name": "血肉",
+    "BuffIDArray": [
+      1004,
+      1002
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF0000",
+    "Rate": 10,
+    "Desc": "生命值增加，攻击力减少"
+  },
+  "1010": {
+    "ID": 1010,
+    "Name": "狂战",
+    "BuffIDArray": [
+      1001,
+      1005
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF0000",
+    "Rate": 10,
+    "Desc": "生命值减少，攻击力增加"
+  },
+  "1011": {
+    "ID": 1011,
+    "Name": "荆棘",
+    "BuffIDArray": [
+      1010
+    ],
+    "UseColor": 1,
+    "ColorStr": "00F9FF",
+    "Rate": 10,
+    "Desc": "根据本回合的伤害弃牌增加"
+  },
+  "1012": {
+    "ID": 1012,
+    "Name": "回复",
+    "BuffIDArray": [
+      1003
+    ],
+    "UseColor": 1,
+    "ColorStr": "13FF00",
+    "Rate": 10,
+    "Desc": "回合开始回复5血量"
+  }
+}
