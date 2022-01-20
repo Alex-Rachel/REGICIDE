@@ -39,8 +39,6 @@ sealed partial class GameApp : UnitySingleton<GameApp>
     {
         var config = FeatureConfigMgr.Instance.GetFeatureBaseConfig();
 
-        //var config2 = MonsterConfigMgr.Instance.GetMonsterConfig(1001);
-        
         yield return new WaitForSeconds(0.3f);
         if (GameMgr.Instance.IsLandScape)
         {
@@ -50,7 +48,9 @@ sealed partial class GameApp : UnitySingleton<GameApp>
         }
         else
         { 
-            UnityUtil.RmvMonoBehaviour<CanvasScaler>(UISys.Mgr.canvas.gameObject);
+            var canvasScale = UnityUtil.GetComponent<CanvasScaler>(UISys.Mgr.canvas.gameObject);
+            canvasScale.referenceResolution = new Vector2(1170,2532);
+
             Debug.Log("是竖屏");
 
             var ui = UISys.Mgr.ShowWindow<MsgUI>(UI_Layer.Top);

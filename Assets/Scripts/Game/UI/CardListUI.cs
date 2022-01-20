@@ -189,6 +189,7 @@ class ItemCard : UIWindowWidget
         for (int i = 0; i < m_textFeatures.Count; i++)
         {
             m_textFeatures[i].text = "";
+            m_textFeatures[i].gameObject.SetActive(false);
         }
 
         if (actor.Features.Count>0)
@@ -196,9 +197,12 @@ class ItemCard : UIWindowWidget
             if (m_textFeature != null)
             {
                 m_textFeature.text = "君主天赋：";
+                m_showFeature = true;
+                m_goFeature.SetActive(m_showFeature);
                 for (int i = 0; i < actor.Features.Count; i++)
                 {
                     var feature = actor.Features[i];
+                    m_textFeatures[i].gameObject.SetActive(true);
                     if (feature.UseColor == 1)
                     {
                         m_textFeature.text += feature.Name.ToColor(feature.ColorStr) + " ";
@@ -219,6 +223,12 @@ class ItemCard : UIWindowWidget
                     }
                 }
             }
+        }
+        else
+        {
+            m_showFeature = false;
+            m_goFeature.SetActive(false);
+            m_textFeature.text = "";
         }
        
         if (GameMgr.Instance.IsLandScape)

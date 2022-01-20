@@ -3,6 +3,66 @@ using UnityEngine;
 
 public static class BuffHelper
 {
+    //处理被攻击时的buff
+    public static void HandleBeAttackBuff(this BossActor bossActor,ref int value)
+    {
+        if (bossActor == null)
+        {
+            return;
+        }
+
+        var buffMgr = bossActor.ActorBuffMgr;
+
+        if (buffMgr == null)
+        {
+            return;
+        }
+
+        if (buffMgr.BuffCount <= 0)
+        {
+            return;
+        }
+
+        foreach (var buff in buffMgr.buffList)
+        {
+            buffMgr.HandleBeAttackBuff(bossActor, buff,ref value);
+        }
+    }
+
+    //处理被攻击后的buff
+    public static bool HandleAfterAttackBuff(this BossActor bossActor)
+    {
+        if (bossActor == null)
+        {
+            return false;
+        }
+
+        var buffMgr = bossActor.ActorBuffMgr;
+
+        if (buffMgr == null)
+        {
+            return false;
+        }
+
+        if (buffMgr.BuffCount <= 0)
+        {
+            return false;
+        }
+
+        bool value = false;
+
+        foreach (var buff in buffMgr.buffList)
+        {
+            if (buffMgr.HandleAfterAttackBuff(bossActor, buff))
+            {
+                value = true;
+            }
+        }
+
+        return value;
+    }
+
+    //处理阶段时的buff
     public static void HandleBuff(this BossActor bossActor)
     {
         if (bossActor == null)
@@ -28,6 +88,10 @@ public static class BuffHelper
         }
     }
 
+    /// <summary>
+    /// 初始化BUFF
+    /// </summary>
+    /// <param name="bossActor"></param>
     public static void InitBuff(this BossActor bossActor)
     {
         if (bossActor == null)
@@ -158,24 +222,118 @@ public class BuffMgr
                 }
                 break;
             case BuffType.BUFF_ADD_HEALTH:
+                if (bossActor.Hp<=0 || bossActor.Hp >= bossActor.MaxHp)
+                {
+                    return;
+                }
                 value = (int)(bossActor.MaxHp * buff.BuffValue);
                 bossActor.Hp += value;
                 UISys.ShowTipMsg(string.Format("君主使用了回复,回复了<color=#13FF00>{0}</color>HP", value));
                 break;
             case BuffType.BUFF_HUIFU:
+                if (bossActor.Hp <= 0 || bossActor.Hp >= bossActor.MaxHp)
+                {
+                    return;
+                }
                 value = (int)(buff.BuffValue);
                 bossActor.Hp += value;
                 UISys.ShowTipMsg(string.Format("君主使用了恢复,恢复了<color=#13FF00>{0}</color>HP", value));
                 break;
-            case BuffType.BUFF_WEIYA:
+            case BuffType.BUFF_BUQU:
 
                 break;
-            
+            case BuffType.BUFF_ADD_DEMAGE:
+                value = (int)(bossActor.Atk * buff.BuffValue);
+                UISys.ShowTipMsg(string.Format("君主发动了<color=#FF00F0>炼狱</color>增加<color=#FF0000>{0}</color>ATK", value));
+                bossActor.Atk += value;
+                break;
+            case BuffType.BUFF_ADD_DEMAGE_VALUE:
+                value = (int)(buff.BuffValue);
+                UISys.ShowTipMsg(string.Format("君主发动了<color=#FF00F0>炼狱</color>增加<color=#FF0000>{0}</color>ATK", value));
+                bossActor.Atk += value;
+                break;
+
         }
         EventCenter.Instance.EventTrigger("BossDataRefresh",bossActor);
     }
 
-#region 设置BUFF
+    public void HandleBeAttackBuff(BossActor bossActor, BuffConfig buff,ref int attackValue)
+    {
+        if (bossActor == null || buff == null)
+        {
+            return;
+        }
+
+        var currentState = GameMgr.Instance.gameState;
+
+        var handleState = (GameMgr.GameState)buff.HandleState;
+
+        if (handleState == GameMgr.GameState.NONE)
+        {
+            return;
+        }
+
+        if (handleState != currentState)
+        {
+            return;
+        }
+
+        int value;
+        switch ((BuffType)buff.BuffType)
+        {
+            case BuffType.BUFF_WEIYA:
+                if (attackValue > buff.BuffValue)
+                {
+                    UISys.ShowTipMsg("Boss发动了<color=#00F9FF>霜寒</color>，降低所受伤害");
+                    attackValue = (int)buff.BuffValue;
+                }
+                break;
+
+        }
+        EventCenter.Instance.EventTrigger("BossDataRefresh", bossActor);
+    }
+
+    public bool HandleAfterAttackBuff(BossActor bossActor, BuffConfig buff)
+    {
+        if (bossActor == null || buff == null)
+        {
+            return false;
+        }
+
+        var currentState = GameMgr.Instance.gameState;
+
+        var handleState = (GameMgr.GameState)buff.HandleState;
+
+        if (handleState == GameMgr.GameState.NONE)
+        {
+            return false;
+        }
+
+        if (handleState != currentState)
+        {
+            return false;
+        }
+
+        int value;
+        bool handleBuff = false;
+        switch ((BuffType)buff.BuffType)
+        {
+            case BuffType.BUFF_BUQU:
+                handleBuff = true;
+                bossActor.HadBuQuIng = true;
+                EventCenter.Instance.EventTrigger("BossAttack", bossActor.Atk);
+                MonoManager.Instance.StartCoroutine(Utils.Wait(0.5f, (() =>
+                {
+                    UISys.ShowTipMsg(string.Format("领主发动{0}！！！",buff.BuffName.ToColor("FFD200")));
+                })));
+                break;
+        }
+        EventCenter.Instance.EventTrigger("BossDataRefresh", bossActor);
+        return handleBuff;
+    }
+    
+
+    #region 设置BUFF
 
     public void SetBuffByFeatures(List<FeatureConfig> featureConfigs, BossActor bossActor = null)
     {
@@ -210,20 +368,35 @@ public class BuffMgr
             {
                 continue;
             }
-            if (!m_buffDic.ContainsKey(buffs[i]))
+
+            var buff = BuffConfigMgr.Instance.GetCfg(buffID);
+
+            if (buff == null)
             {
-                var buff = BuffConfigMgr.Instance.GetCfg(buffID);
-                if (buff == null)
-                {
-                    Debug.LogError("buff error: had no buff buffID =>" + buffID);
-                    continue;
-                }
+#if UNITY_EDITOR
+                Debug.LogError("buff error: had no buff buffID =>" + buffID);
+#endif
+                continue;
+            }
+
+            bool canAddBuff = buff.CanAddBuff == 1;
+
+            if (!m_buffDic.ContainsKey(buffID))
+            {
 #if UNITY_EDITOR
                 Debug.LogError("buff add success:buffID =>" + buffID + buff.BuffName);
 #endif
                 m_buffDic.Add(buffID, buff);
                 m_buffList.Add(buff);
             }
+            //else if (canAddBuff)
+            //{
+            //    BuffConfig buffConfig;
+            //    if (m_buffDic.TryGetValue(buffID,out buffConfig))
+            //    {
+            //        buffConfig.BuffValue += buffConfig.BuffValue;
+            //    }
+            //}
         }
     }
 

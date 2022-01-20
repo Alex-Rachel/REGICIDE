@@ -23,27 +23,25 @@ class FeatureMgr : Singleton<FeatureMgr>
         var temp = new List<FeatureConfig>();
         while (!complete)
         {
-            Random ran = new Random((int)DateTime.Now.Ticks + randCount);
 
             if (temp.Count >= featureCount)
             {
                 break;
             }
 
-            var idx = ran.Next(0, totalFeaCount);
 
-            var feature = FeatureConfigMgr.Instance.FeatureConfigList[idx];
+            var feature = FeatureConfigMgr.Instance.RandFeatureConfig();
 
             bool hadCard = false;
 
             for (int i = 0; i < temp.Count; i++)
             {
-                if (temp[i].ID == feature.ID)
+                bool onlyOne = temp[i].OnlyOne == 1;
+                if (temp[i].ID == feature.ID ||(onlyOne && temp[i].Type == feature.Type))
                 {
                     hadCard = true;
                     break;
                 }
-
             }
 
             if (feature!= null && !hadCard)

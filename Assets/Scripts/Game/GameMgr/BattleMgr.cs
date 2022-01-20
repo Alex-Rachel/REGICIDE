@@ -106,6 +106,8 @@ public class BattleMgr : Singleton<BattleMgr>
 
         int value = couldDouble ? attackData.Damage * 2 : attackData.Damage;
 
+        actor.HandleBeAttackBuff(ref value);
+
         if (attackData.CouldDownBossAtk && (boss_type != CardType.SPADE && boss_type != CardType.BLACK_JOKER))
         {
             EventCenter.Instance.EventTrigger<int>("DownAtk", attackData.Damage);

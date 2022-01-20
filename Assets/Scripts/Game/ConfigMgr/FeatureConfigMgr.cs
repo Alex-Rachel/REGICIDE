@@ -5,11 +5,12 @@ public class FeatureConfigMgr : Singleton<FeatureConfigMgr>
 {
     private Dictionary<string, FeatureConfig> m_dictFeatureBaseConfig = new Dictionary<string, FeatureConfig>();
     private List<FeatureConfig> m_listFeatureConfig = new List<FeatureConfig>();
-    private Dictionary<int,FeatureConfig> m_randlistFeatureConfig = new Dictionary<int,FeatureConfig>();
+    private Dictionary<FeatureRate, FeatureConfig> m_randFeatureConfig = new Dictionary<FeatureRate, FeatureConfig>();
     public List<FeatureConfig> FeatureConfigList
     {
         get { return m_listFeatureConfig; }
     }
+    private int RankdTotalRate = 0;
 
     public FeatureConfigMgr()
     {
@@ -20,6 +21,18 @@ public class FeatureConfigMgr : Singleton<FeatureConfigMgr>
             {
                 m_listFeatureConfig.Add(config.Value);
             }
+        }
+
+        InitRandConfig();
+    }
+
+    private void InitRandConfig()
+    {
+        foreach (var config in m_listFeatureConfig)
+        {
+            FeatureRate featureRate = new FeatureRate(RankdTotalRate, RankdTotalRate + (int)config.Rate);
+            RankdTotalRate += (int)config.Rate;
+            m_randFeatureConfig.Add(featureRate, config);
         }
     }
 
@@ -54,17 +67,28 @@ public class FeatureConfigMgr : Singleton<FeatureConfigMgr>
 
          var idx = ran.Next(0, RankdTotalRate);
 
+         foreach (var ctx in m_randFeatureConfig)
+         {
+             var rate = ctx.Key;
+             if (idx>= rate.pre && idx < rate.next)
+             {
+                 return ctx.Value;
+             }
+         }
+
          return null;
      }
 
-    int RankdTotalRate = 0;
+     public struct FeatureRate
+     {
+        public int pre;
+        public int next;
 
-    private void InitRandConfig()
-    {
-         foreach (var config in m_listFeatureConfig)
-         {
-             RankdTotalRate += (int)config.Rate;
-             m_randlistFeatureConfig.Add(RankdTotalRate, config);
-         }
-    }
+        public FeatureRate(int pre, int next)
+        {
+            this.pre = pre;
+            this.next = next;
+        }
+     }
 }
+

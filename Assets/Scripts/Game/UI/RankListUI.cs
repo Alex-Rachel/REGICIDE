@@ -35,10 +35,17 @@ class RankListUI : UIWindow
         m_itemLevel.gameObject.SetActive(false);
         m_itemRank.gameObject.SetActive(false);
         RankDataMgr.Instance.GetRankDatas(rankIndex);
-        AdjustIconNum(m_levels, 5, m_tfLevel, m_itemLevel);
+        AdjustIconNum(m_levels, 7, m_tfLevel, m_itemLevel);
         for (int i = 0; i < m_levels.Count; i++)
         {
-            m_levels[i].Init(i+3);
+            if (i<5)
+            {
+                m_levels[i].Init(i + 3);
+            }
+            else
+            {
+                m_levels[i].Init(i + 5);
+            }
         }
     }
 
@@ -190,11 +197,22 @@ class ItemRankLevel : UIWindowWidget
             case 6:
             {
                 m_textLevel.text = "魂";
+                gameObject.SetActive(false);
                 break;
             }
             case 7:
             {
                 m_textLevel.text = "联机";
+                break;
+            }
+            case 10:
+            {
+                m_textLevel.text = "Rog";
+                break;
+            }
+            case 11:
+            {
+                m_textLevel.text = "Rog魂";
                 break;
             }
         }

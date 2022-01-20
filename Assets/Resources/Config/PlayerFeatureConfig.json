@@ -1,0 +1,110 @@
+{
+  "row_2": {
+    "ID": 1001,
+    "Name": "戏法",
+    "SR": 0,
+    "BuffIDArray": [
+      1007
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF0000",
+    "Rate": 10,
+    "Desc": "Joker数目+1"
+  },
+  "row_3": {
+    "ID": 1002,
+    "Name": "炼狱",
+    "SR": 0,
+    "BuffIDArray": [
+      1012
+    ],
+    "UseColor": 1,
+    "ColorStr": "FFD200",
+    "Rate": 10,
+    "Desc": "非感化会受到君主伤害"
+  },
+  "row_4": {
+    "ID": 1003,
+    "Name": "神曲",
+    "SR": 0,
+    "BuffIDArray": [
+      0
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF00F0",
+    "Rate": 10,
+    "Desc": "君主无法被感化"
+  },
+  "row_5": {
+    "ID": 1004,
+    "Name": "圣道",
+    "SR": 0,
+    "BuffIDArray": [
+      1003
+    ],
+    "UseColor": 1,
+    "ColorStr": "13FF00",
+    "Rate": 10,
+    "Desc": "回合开始恢复20%最大血量"
+  },
+  "row_6": {
+    "ID": 1005,
+    "Name": "深渊",
+    "SR": 0,
+    "BuffIDArray": [
+      1006
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF0000",
+    "Rate": 10,
+    "Desc": "君主增加5伤害"
+  },
+  "row_7": {
+    "ID": 1006,
+    "Name": "断罪",
+    "SR": 0,
+    "BuffIDArray": [
+      1013
+    ],
+    "UseColor": 0,
+    "ColorStr": "F",
+    "Rate": 10,
+    "Desc": "每打出1张牌，必须丢弃1张"
+  },
+  "row_8": {
+    "ID": 1007,
+    "Name": "日落",
+    "SR": 0,
+    "BuffIDArray": [
+      1008
+    ],
+    "UseColor": 0,
+    "ColorStr": "F",
+    "Rate": 10,
+    "Desc": "抵挡10以上的伤害"
+  },
+  "row_9": {
+    "ID": 1008,
+    "Name": "破颅者",
+    "SR": 0,
+    "BuffIDArray": [
+      1002
+    ],
+    "UseColor": 1,
+    "ColorStr": "FFD200",
+    "Rate": 10,
+    "Desc": "君主生命值增加"
+  },
+  "row_10": {
+    "ID": 1009,
+    "Name": "畸变",
+    "SR": 0,
+    "BuffIDArray": [
+      0
+    ],
+    "UseColor": 1,
+    "ColorStr": "FF00F0",
+    "Rate": 3,
+    "Desc": "贪婪阴霾"
+  }
+}

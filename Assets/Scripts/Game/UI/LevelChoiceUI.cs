@@ -37,10 +37,10 @@ class LevelChoiceUI : UIWindow
         }
 
 
-        AdjustIconNum(m_Speciallist, 1, m_tfLevelSpecial, m_itemLevel);
+        AdjustIconNum(m_Speciallist, 2, m_tfLevelSpecial, m_itemLevel);
         for (int i = 0; i < m_Speciallist.Count; i++)
         {
-            m_Speciallist[i].Init(9);
+            m_Speciallist[i].Init(9+i);
         }
 
         m_itemLevel.gameObject.SetActive(false);
@@ -118,17 +118,23 @@ class ItemLevel : UIWindowWidget
                     break;
             }
             case 5:
-                {
-                    m_textRoomInfo.text = "地狱";
-                    m_textNum.text = "7+7";
-                    break;
-                }
+            {
+                m_textRoomInfo.text = "地狱";
+                m_textNum.text = "7+7";
+                break;
+            }
 
             case 10:
             {
                 m_textRoomInfo.text = "Roguelike";
-                m_textNum.text = "?";
+                m_textNum.text = "简";
                     break;
+            }
+            case 11:
+            {
+                m_textRoomInfo.text = "Roguelike";
+                m_textNum.text = "魂";
+                break;
             }
         }
     }

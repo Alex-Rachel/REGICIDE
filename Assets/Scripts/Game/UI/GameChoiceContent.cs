@@ -1,9 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 class GameChoiceUI : UIWindow
 {
+    private Action m_closeAction;
     private List<ItemCard> m_randLilst = new List<ItemCard>();
     private List<ItemCard> m_mycardLilst = new List<ItemCard>();
     #region 脚本工具生成的代码
@@ -53,6 +55,12 @@ class GameChoiceUI : UIWindow
     private void OnClickRestartBtn()
     {
         GameMgr.Instance.RandChangeCards();
+        m_closeAction?.Invoke();
+    }
+
+    public void RegisterCloseAction(Action callback)
+    {
+        m_closeAction = callback;
     }
     #endregion
 

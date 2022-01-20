@@ -248,8 +248,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TargetFrameRate: 60
-  payerNum: 0
-  ConnectAuto: 0
   UseWebSocket: 1
   UseBuggly: 1
   IsGmMode: 0

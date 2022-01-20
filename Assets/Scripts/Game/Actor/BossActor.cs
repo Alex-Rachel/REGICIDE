@@ -35,6 +35,7 @@ public class BossActor : GameActor
     }
 
     public bool HadChongFeng = false;
+    public bool HadBuQuIng = false;
 
     private List<FeatureConfig> m_features = new List<FeatureConfig>();
 
@@ -64,12 +65,18 @@ public class BossActor : GameActor
         {
             var featureCount = 1;
 
-            System.Random ran = new Random((int)DateTime.Now.Ticks);
-            var idx = ran.Next(0, 10);
-
-            if (idx >=8)
+            switch (GameMgr.Instance.GameLevel)
             {
-                featureCount++;
+                case 10:
+                {
+                    featureCount = 1;
+                        break;
+                }
+                case 11:
+                {
+                    featureCount = 2;
+                        break;
+                }
             }
 
             if (IsSamllJoker)
@@ -79,6 +86,40 @@ public class BossActor : GameActor
             else if (IsBigJoker)
             {
                 featureCount = 3;
+            }
+
+            System.Random ran = new Random((int)DateTime.Now.Ticks);
+            var idx = ran.Next(0, 10);
+
+            switch (GameMgr.Instance.GameLevel)
+            {
+                case 10:
+                {
+                    if (idx >= 8)
+                    {
+                        featureCount++;
+                    }
+                    break;
+                }
+                case 11:
+                {
+                    if (IsSamllJoker)
+                    {
+                        featureCount = 4;
+                        break;
+                    }
+                    else if (IsBigJoker)
+                    {
+                        featureCount = 4;
+                        break;
+                    }
+
+                    if (idx >= 6)
+                    {
+                        featureCount++;
+                    }
+                    break;
+                }
             }
 
             FeatureMgr.Instance.GenBossFeature(this, featureCount);
@@ -223,12 +264,32 @@ public class BossActor : GameActor
         MonoManager.Instance.StartCoroutine(Hurt(value, 0.5f));
     }
 
+    public bool CheckBossDie()
+    {
+        if (Hp <= 0)
+        {
+            Hurt(0);
+        }
+
+        return false;
+    }
+
     IEnumerator Hurt(int value ,float waitsecond)
     {
         yield return new WaitForSeconds(waitsecond);
         Hp -= value;
         if (Hp <= 0)
         {
+            if (Hp!=0)
+            {
+                if (this.HandleAfterAttackBuff() && HadBuQuIng)
+                {
+                    Hp = -1;
+                    HadBuQuIng = false;
+                    yield break;
+                }
+            }
+
             EventCenter.Instance.EventTrigger("BossDie", Hp == 0); //boss被归化，变成卡堆第一张
             Hp = 0;
         }

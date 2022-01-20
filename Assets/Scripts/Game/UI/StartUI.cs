@@ -47,7 +47,7 @@ class StartUI : UIWindow
             m_btnCloseAuto.gameObject.Show(true);
         }
 
-        if (PlayerPrefs.GetInt("FirstShow")!=1)
+        if (PlayerPrefs.GetInt("FirstShow1")!=1)
         {
             StartCoroutine("FirstShow1", ShowUI());
         }
@@ -56,12 +56,13 @@ class StartUI : UIWindow
     IEnumerator ShowUI()
     {
         yield return new WaitForSeconds(1.0f);
-        UISys.Mgr.ShowWindow<RuleFirstUI>().Init("FirstShow", "");
+        UISys.Mgr.ShowWindow<RuleFirstUI>().Init("FirstShow1", "",false);
     }
 
     private void OnClickRuleBtn()
     {
-        UISys.ShowTipMsg("敬请期待~");
+        UISys.Mgr.ShowWindow<RuleFirstUI>().Init("RuleUI", "",false);
+        //UISys.ShowTipMsg("敬请期待~");
     }
 
     private void OnClickStartGameBtn()
