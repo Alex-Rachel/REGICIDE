@@ -30,6 +30,11 @@ public class BattleContext
     internal float time;
     #endregion
 
+    /// <summary>
+    /// 战斗是否结束
+    /// </summary>
+    public bool IsBattleFinish = false;
+
     internal Battle battle;
     internal ActorEntityMgr actorMgr;
     internal SkillDamageHelper damageHelper;

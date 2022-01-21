@@ -11,9 +11,13 @@ public class SkillConfigMgr : Singleton<SkillConfigMgr>
         m_dictSkillBaseConfig = ResConfigUtil.ReadConfigRes<SkillBaseConfig>("SkillConfig");
     }
 
-    public Dictionary<string, SkillBaseConfig> GetSkillBaseCfg()
+    public SkillBaseConfig GetSkillBaseCfg(uint skillID)
     {
-        return m_dictSkillBaseConfig;
+        if (!m_dictSkillBaseConfig.ContainsKey(skillID.ToString()))
+        {
+            return null;
+        }
+        return m_dictSkillBaseConfig[skillID.ToString()];
     }
 }
 

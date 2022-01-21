@@ -17,6 +17,11 @@ class PlayerEntity : ActorEntity
 
     public PlayerEntity(BattleContext context) : base(context) { }
 
+    public override int GetTypeId()
+    {
+        return (int)EntityTypeDefine.EntityHero;
+    }
+
     protected override bool OnCreate(ActorEntityCreateData createData)
     {
         m_roleId = createData.m_playerParam.roleId;

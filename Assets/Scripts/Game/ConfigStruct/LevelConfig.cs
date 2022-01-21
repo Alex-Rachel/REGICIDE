@@ -9,7 +9,7 @@
 public class LevelBaseConfig
 {
 	public int ID; // 关卡ID
-	public int MonsterID; // 怪物ID
+	public int[] MonsterID; // 怪物ID数组
 }
 
 

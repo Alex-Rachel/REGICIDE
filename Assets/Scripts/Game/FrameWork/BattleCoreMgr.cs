@@ -35,6 +35,6 @@ public class BattleCoreMgr
     public static void DestroyBattle(Battle battle)
     {
         battle.Destroy();
-        // FMemPoolMgr.Instance.ClearAllPool();
+        FMemPoolMgr.Instance.ClearAllPool();
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 
 /// <summary>
@@ -16,7 +17,37 @@ public abstract class ActorEntity : Entity
 
     public abstract ActorEntityType ActorType { get; }
     public ActorEntitySide ActorEntitySide { get; private set; }
+
+    private ActorStateID m_currState = ActorStateID.Idle;
+    public ActorStateID CurrState
+    {
+        get { return m_currState; }
+        set
+        {
+            if (m_currState != value)
+            {
+                var oldVal = m_currState;
+                m_currState = value;
+
+                OnEntityStateChg(oldVal, value);
+            }
+        }
+    }
+
+    private void OnEntityStateChg(ActorStateID oldVal, ActorStateID newVal)
+    {
+        ActorEntityEventHelper.SendStateChanged(this, oldVal, newVal);
+        SendVisualEvent(EntityVisualEvent.ACTOR_STATE_CHANGE);
+
+        if (oldVal == ActorStateID.Die || newVal == ActorStateID.Die)
+        {
+            // RefreshColliderVisible();
+        }
+    }
+
     public ActorEntityCreateData CreateData { get; private set; }
+
+    public ActorData ActorData { get; private set; }
 
     public bool IsDestroyed = false;
 
@@ -25,19 +56,24 @@ public abstract class ActorEntity : Entity
         get { return GetActorName(); }
     }
 
+    /// <summary>
+    /// 总伤害数据
+    /// </summary>
+    public int TotalDamage;
+
     #region 事件封装
-    //private ActorEntityEventDispatcher m_event;
-    //internal ActorEntityEventDispatcher Event
-    //{
-    //    get
-    //    {
-    //        if (m_event == null)
-    //        {
-    //            m_event = FMemPool<ActorEntityEventDispatcher>.Instance.Alloc();
-    //        }
-    //        return m_event;
-    //    }
-    //}
+    private ActorEntityEventDispatcher m_event;
+    internal ActorEntityEventDispatcher Event
+    {
+        get
+        {
+            if (m_event == null)
+            {
+                m_event = FMemPool<ActorEntityEventDispatcher>.Instance.Alloc();
+            }
+            return m_event;
+        }
+    }
     #endregion
 
     #region 组件封装
@@ -189,6 +225,11 @@ public abstract class ActorEntity : Entity
 
     public SkillMgr SkillMgr { get; private set; }
 
+    public bool IsDied
+    {
+        get { return m_currState == ActorStateID.Die; }
+    }
+
     internal bool Create(ActorEntityCreateData createData)
     {
         CreateData = createData;
@@ -228,7 +269,7 @@ public abstract class ActorEntity : Entity
 
         if (!OnInitActorAttr())
         {
-            // BLogger.Error("OnInitActorAttr failed: {0}", name);
+            Debug.LogErrorFormat("OnInitActorAttr failed: {0}", name);
             return false;
         }
 
@@ -288,6 +329,29 @@ public abstract class ActorEntity : Entity
     }
     protected virtual void OnDestroy()
     {
+    }
+
+    /// <summary>
+    /// 所属的怪物类型
+    /// </summary>
+    internal virtual MonsterType GetMonsterType()
+    {
+        return MonsterType.MonsterNoneType;
+    }
+
+    public virtual bool IsBoss()
+    {
+        return false;
+    }
+
+    /// <summary>
+    /// 获取技能ID
+    /// </summary>
+    /// <param name="idx"></param>
+    /// <returns></returns>
+    public virtual uint GetSkillByIdx(uint idx)
+    {
+        return 0;
     }
 
     #endregion

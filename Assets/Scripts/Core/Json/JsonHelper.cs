@@ -19,14 +19,4 @@ public class JsonHelper : Singleton<JsonHelper>
     {
         return JsonMapper.ToJson(jsonData);
     }
-
-    public T Deserialize<T>(string json)
-    {
-        return JsonMapper.ToObject<T>(json);
-    }
-
-    public string Serialize(Object jsonData)
-    {
-        return JsonMapper.ToJson(jsonData);
-    }
 }

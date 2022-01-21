@@ -14,13 +14,5 @@ public class SkillBaseConfig
 	public string[] DescArray; // 描述数组
 }
 
-public class SkillLvConfig
-{
-	public int LV; // 等级
-	public string Name; // 技能名称
-	public int[] BuffIDArray; // BuffID数组
-	public string[] DescArray; // 描述数组
-}
-
 
 // End of Auto Generated Code

@@ -437,7 +437,7 @@ namespace LitJson
                     if (reader.Token == JsonToken.ObjectEnd)
                         break;
 
-                    string property = (string) reader.Value;
+                    string property = (string)reader.Value;
 
                     if (t_data.Properties.ContainsKey (property)) {
                         PropertyMetadata prop_data =
@@ -472,6 +472,17 @@ namespace LitJson
                                 continue;
                             }
                         }
+
+                        //if (t_data.IsDictionary)
+                        //{
+                        //    var dicTypes = instance.GetType().GetGenericArguments();
+                        //    var converter = System.ComponentModel.TypeDescriptor.GetConverter(dicTypes[0]);
+                        //    if (converter != null)
+                        //    {
+                        //        property = converter.ConvertFromString((string)property);
+                        //        t_data.ElementType = dicTypes[1];
+                        //    }
+                        //}
 
                         ((IDictionary) instance).Add (
                             property, ReadValue (

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 public enum ActorEntityType
 {
@@ -33,6 +34,13 @@ public class ActorEntityMgr : IBattleContextHost
     private Dictionary<uint, ActorEntity> m_actorPool = new Dictionary<uint, ActorEntity>();
     private List<ActorEntity>[] m_listSide = new List<ActorEntity>[(int)ActorEntitySide.SideCnt];
     private List<ActorEntity> m_listPlayer = new List<ActorEntity>();
+    private List<ActorEntity> m_listDiedActor = new List<ActorEntity>();
+
+
+    public event Action<ActorEntity> OnActorCreate;
+    public event Action<ActorEntity> OnActorDestory;
+    public event Action<ActorEntity> OnActorDieAction;
+    public event Action<ActorEntity, ActorEntity, List<ActorEntity>> OnActorKillAction;
 
     private uint m_nextActorId;
 
@@ -55,7 +63,7 @@ public class ActorEntityMgr : IBattleContextHost
         var actor = CreateActorEntityObject(createData.m_actorType, ++m_nextActorId, createData.m_side);
         if (actor == null)
         {
-            // FLogger.Error("create actor failed, create data is {0}", createData);
+            Debug.LogErrorFormat("create actor failed, create data is {0}", createData);
             return null;
         }
 
@@ -67,12 +75,12 @@ public class ActorEntityMgr : IBattleContextHost
         }
 
         // TODO事件
-        //if (OnActorCreate != null)
-        //{
-        //    OnActorCreate(actor);
-        //}
+        if (OnActorCreate != null)
+        {
+            OnActorCreate(actor);
+        }
 
-        // BLogger.Debug("actor created: {0}", actor.name);
+        Debug.LogFormat("actor created: {0}", actor.name);
         return actor;
     }
 
@@ -94,9 +102,14 @@ public class ActorEntityMgr : IBattleContextHost
                     newActor = new PlayerEntity(Context);
                     break;
                 }
+            case ActorEntityType.eMonster:
+                {
+                    newActor = new MonsterEntity(Context);
+                    break;
+                }
             default:
                 {
-                    // FLogger.Error("unknown actor type:{0}", actorType);
+                    Debug.LogErrorFormat("unknown actor type:{0}", actorType);
                     break;
                 }
         }
@@ -119,9 +132,14 @@ public class ActorEntityMgr : IBattleContextHost
     }
 
 
+    public List<ActorEntity> GetPlayerEntityList()
+    {
+        return m_listPlayer;
+    }
+
     private bool DestroyActor(ActorEntity actor)
     {
-        // FLogger.Debug("on destroy actor {0}", actor.ActorID);
+        Debug.LogFormat("on destroy actor {0}", actor.ActorID);
 
         if (actor.IsDestroyed)
         {
@@ -129,17 +147,17 @@ public class ActorEntityMgr : IBattleContextHost
         }
 
         var actorID = actor.ActorID;
-        // FLogger.Assert(m_actorPool.ContainsKey(actorID));
+        Debug.Assert(m_actorPool.ContainsKey(actorID));
 
         var side = actor.ActorEntitySide;
         var sideList = m_listSide[(int)side];
         sideList.Remove(actor);
 
         // TODO 事件
-        //if (OnActorDestory != null)
-        //{
-        //    OnActorDestory(actor);
-        //}
+        if (OnActorDestory != null)
+        {
+            OnActorDestory(actor);
+        }
 
         actor.Destroy();
         m_actorPool.Remove(actorID);
@@ -168,6 +186,34 @@ public class ActorEntityMgr : IBattleContextHost
         // CheckDiedActor();
     }
 
+    #region 通用事件
+
+    public void OnActorDied(ActorEntity actor)
+    {
+        if (actor.ActorType != ActorEntityType.eGamePlayer)
+        {
+            var listDiedActor = m_listDiedActor;
+            if (!listDiedActor.Contains(actor))
+            {
+                listDiedActor.Add(actor);
+            }
+        }
+
+        if (OnActorDieAction != null)
+        {
+            OnActorDieAction(actor);
+        }
+    }
+
+    public void OnActorKill(ActorEntity killer, ActorEntity victim, List<ActorEntity> assistList)
+    {
+        if (OnActorKillAction != null)
+        {
+            OnActorKillAction(killer, victim, assistList);
+        }
+    }
+
+    #endregion
 
 }
 

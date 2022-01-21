@@ -839,6 +839,8 @@ partial class GameMgr : Singleton<GameMgr>
     public int GameLevel = 0;
     public void RestartGame()
     {
+        BattleSys.Instance.StartLevel(LevelDiffType.FirstType);
+
         var _index = PlayerPrefs.GetInt("GameLevel");
         GameLevel = _index;
 

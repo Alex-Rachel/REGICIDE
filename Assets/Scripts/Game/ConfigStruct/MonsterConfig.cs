@@ -11,6 +11,9 @@ public class MonsterBaseConfig
 	public int ID; // ID
 	public string Name; // 名称
 	public int IsBoss; // 是否为Boss
+	public int Hp; // 血量
+	public float Atk; // 攻击力
+	public int[] Skills; // 初始技能数组
 }
 
 

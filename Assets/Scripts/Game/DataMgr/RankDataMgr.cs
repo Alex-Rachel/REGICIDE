@@ -53,87 +53,87 @@ public class RankDataMgr : Singleton<RankDataMgr>
         RankDatas.Clear();
         var res = response.DataAsText;
 
-        var jsonData = JsonHelper.Instance.Deserialize(res);
+        //var jsonData = JsonHelper.Instance.Deserialize(res);
 
-        var rankData = jsonData.GetJsonDataByKey("data");
+        //var rankData = jsonData.GetJsonDataByKey("data");
 
-        var msg = jsonData.GetStringDataByKey("msg");
+        //var msg = jsonData.GetStringDataByKey("msg");
 
-        var ranks = rankData.GetJsonDataByKey("ranks");
+        //var ranks = rankData.GetJsonDataByKey("ranks");
 
-        bool online = msg.Equals("Online");
+        //bool online = msg.Equals("Online");
 
-        var count = ranks.ArrayCount;
+        //var count = ranks.ArrayCount;
 
-        if (online)
-        {
-            for (int i = 0; i < count; i++)
-            {
-                var data = ranks.GetJsonDataByIndex(i);
+        //if (online)
+        //{
+        //    for (int i = 0; i < count; i++)
+        //    {
+        //        var data = ranks.GetJsonDataByIndex(i);
 
-                RankDatas.Add(new RankData(data,true));
+        //        RankDatas.Add(new RankData(data,true));
 
-                RankDatas.Sort((a, b) =>
-                {
-                    if (a.time > b.time)
-                    {
-                        return 1;
-                    }
-                    else
-                    {
-                        return -1;
-                    }
-                });
-            }
-            EventCenter.Instance.EventTrigger("RefreshRankList", RankDatas);
-            return;
-        }
+        //        RankDatas.Sort((a, b) =>
+        //        {
+        //            if (a.time > b.time)
+        //            {
+        //                return 1;
+        //            }
+        //            else
+        //            {
+        //                return -1;
+        //            }
+        //        });
+        //    }
+        //    EventCenter.Instance.EventTrigger("RefreshRankList", RankDatas);
+        //    return;
+        //}
 
-        for (int i = 0; i < count; i++)
-        {
-            var data = ranks.GetJsonDataByIndex(i);
-            RankDatas.Add(new RankData(data));
-        }
+        //for (int i = 0; i < count; i++)
+        //{
+        //    var data = ranks.GetJsonDataByIndex(i);
+        //    RankDatas.Add(new RankData(data));
+        //}
 
-        RankDatas.Sort((a,  b) => {
-            if (a.GoldCount>b.GoldCount)
-            {
-                return -1;
-            }
-            else if (a.GoldCount == b.GoldCount)
-            {
-                if (a.YinCount!=b.YinCount)
-                {
-                    if (a.YinCount > b.YinCount)
-                    {
-                        return -1;
-                    }
-                    else
-                    {
-                        return 1;
-                    }
-                }
-                else
-                {
-                    if (a.TongCount != b.TongCount)
-                    {
-                        if (a.TongCount > b.TongCount)
-                        {
-                            return -1;
-                        }
-                        else
-                        {
-                            return 1;
-                        }
-                    }
-                    return a.TongCount.CompareTo(b.TongCount);
-                }
-            }
-            else
-            {
-                return 1;
-            }
-        });
+        //RankDatas.Sort((a,  b) => {
+        //    if (a.GoldCount>b.GoldCount)
+        //    {
+        //        return -1;
+        //    }
+        //    else if (a.GoldCount == b.GoldCount)
+        //    {
+        //        if (a.YinCount!=b.YinCount)
+        //        {
+        //            if (a.YinCount > b.YinCount)
+        //            {
+        //                return -1;
+        //            }
+        //            else
+        //            {
+        //                return 1;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            if (a.TongCount != b.TongCount)
+        //            {
+        //                if (a.TongCount > b.TongCount)
+        //                {
+        //                    return -1;
+        //                }
+        //                else
+        //                {
+        //                    return 1;
+        //                }
+        //            }
+        //            return a.TongCount.CompareTo(b.TongCount);
+        //        }
+        //    }
+        //    else
+        //    {
+        //        return 1;
+        //    }
+        //});
 
         EventCenter.Instance.EventTrigger("RefreshRankList", RankDatas);
     }

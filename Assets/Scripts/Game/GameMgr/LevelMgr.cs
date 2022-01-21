@@ -38,7 +38,7 @@ class LevelMgr : Singleton<LevelMgr>
 {
     private LevelStatus m_status = LevelStatus.StatusInit;
 
-    private int curLevelIndex = 0;
+    private int m_curLevelIndex = 0;
     private int[] m_curLevelArr;
 
     private DiffcultConfig m_diffCfg;
@@ -54,9 +54,45 @@ class LevelMgr : Singleton<LevelMgr>
         }
 
         m_curLevelArr = m_diffCfg.LevelArray;
+        var _index = PlayerPrefs.GetInt("GameLevel");
+        if (_index >= m_curLevelArr.Length)
+        {
+            Debug.LogWarningFormat("未找到关卡ID：{0}", _index);
+        }
+        m_curLevelIndex = m_curLevelArr[_index];
+
+        //创建地图资源，初始化地图表现
+        InitMap();
+
+        InitBattleCore(m_curLevelIndex);
     }
 
-    public 
+    /// <summary>
+    /// 地图场景
+    /// </summary>
+    private void InitMap()
+    {
+        //bool isGuideChapter = GuideSys.Instance.CheckIsGuideChapter(BattleSys.Instance.GetCurChapterCfg().ChapterID);
+        //bool isNextBoss = IsNextBossLevel();
+        //bool bShowBossIcon = isNextBoss && !isGuideChapter;
+        //bool bShowLevelNum = !isNextBoss && !isGuideChapter;
+        //bool bShowTongGuan = IsLastLevel() && !isGuideChapter;
+        //var succ = m_mapCreater.CreateMapObj(MapResIdx, BattleSys.Instance.TransSceneRoot, bShowBossIcon, bShowLevelNum, bShowTongGuan, (progress + 1).ToString());
+        //if (!succ)
+        //{
+        //    return;
+        //}
+
+        //GameEvent.Get<IBattleLogic>().ShowBossHpBar(IsBossLevel(), IsBossLevel());
+
+    }
+
+    private void InitBattleCore(int levelID)
+    {
+        var param = new StartLevelParam();
+        param.m_levelID = (uint)levelID;
+        BattleCoreSys.Instance.InitBattle(param);
+    }
 
 }
 

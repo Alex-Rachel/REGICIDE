@@ -28,31 +28,28 @@ public class Battle : IBattleContextHost
 
     internal bool Create()
     {
-        var timerMgr = new FTimerMgr();
-        AddSystem(timerMgr);
-        Context.timerMgr = timerMgr;
+        //var timerMgr = new FTimerMgr();
+        //AddSystem(timerMgr);
+        //Context.timerMgr = timerMgr;
 
-        var actorMgr = new ActorEntityMgr();
-        AddSystem(actorMgr);
-        Context.actorMgr = actorMgr;
+        //var actorMgr = new ActorEntityMgr();
+        //AddSystem(actorMgr);
+        //Context.actorMgr = actorMgr;
 
-        Context.damageHelper = new SkillDamageHelper(Context);
+        //Context.damageHelper = new SkillDamageHelper(Context);
 
-        //var bulletMgr = new BulletMgr();
-        //AddSystem(bulletMgr);
-        //Context.bulletMgr = bulletMgr;
-
-        //var gmMgr = new BattleGmMgr();
-        //AddSystem(gmMgr);
-        //GmMgr = gmMgr;
-
-        if (!CallSystemInit())
-        {
-            Destroy();
-            return false;
-        }
+        //if (!CallSystemInit())
+        //{
+        //    Destroy();
+        //    return false;
+        //}
 
         return true;
+    }
+
+    public bool StartLevel(StartLevelParam startParam)
+    {
+        return DoStartLevel(startParam);
     }
 
     private bool DoStartLevel(StartLevelParam startParam)
@@ -64,14 +61,11 @@ public class Battle : IBattleContextHost
         {
             case (int)LevelLogicType.SoloLevelType:
                 {
-                    Context.IsPvpBattle = false;
                     logic = new NormalLevelLogic(Context);
                     break;
                 }
             case (int)LevelLogicType.CompLevelType:
                 {
-                    Context.IsPvpBattle = true;
-                    logic = new BattlePvpLevelLogic(Context);
                     break;
                 }
         }
@@ -98,29 +92,25 @@ public class Battle : IBattleContextHost
         return true;
     }
 
-    private void AddSystem(BattleSystem system)
-    {
-        m_listSystem.Add(system);
-    }
+    //private void AddSystem(BattleSystem system)
+    //{
+    //    m_listSystem.Add(system);
+    //}
 
-    private bool CallSystemInit()
-    {
-        var ret = true;
-        for (int i = 0; i < m_listSystem.Count; i++)
-        {
-            var system = m_listSystem[i];
-            if (!system.Init(this))
-            {
-                ret = false;
-                break;
-            }
-        }
+    //private bool CallSystemInit()
+    //{
+    //    var ret = true;
+    //    for (int i = 0; i < m_listSystem.Count; i++)
+    //    {
+    //        var system = m_listSystem[i];
+    //        if (!system.Init(this))
+    //        {
+    //            ret = false;
+    //            break;
+    //        }
+    //    }
 
-        return ret;
-    }
+    //    return ret;
+    //}
 
-    public float TimeFloat()
-    {
-        return Context.time.AsFloat();
-    }
 }

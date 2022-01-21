@@ -19,12 +19,12 @@ abstract class BaseClientData
         var jsonString = PlayerPrefs.GetString(fullName);
         if (!string.IsNullOrEmpty(jsonString))
         {
-            DJsonData json = JsonHelper.Instance.Deserialize(jsonString);
+            //DJsonData json = JsonHelper.Instance.Deserialize(jsonString);
 
-            if (json != null)
-            {
-                Deserialize(json);
-            }
+            //if (json != null)
+            //{
+            //    Deserialize(json);
+            //}
         }
     }
 
@@ -34,12 +34,12 @@ abstract class BaseClientData
         DJsonData jsonData = new DJsonData();
         Serialize(jsonData);
 
-        var jsonTex = JsonHelper.Instance.Serialize(jsonData);
-        if (!string.IsNullOrEmpty(jsonTex))
-        {
-            PlayerPrefs.SetString(fullName, jsonTex);
-            PlayerPrefs.Save();
-        }
+        //var jsonTex = JsonHelper.Instance.Serialize(jsonData);
+        //if (!string.IsNullOrEmpty(jsonTex))
+        //{
+        //    PlayerPrefs.SetString(fullName, jsonTex);
+        //    PlayerPrefs.Save();
+        //}
     }
     /**
      * 序列化为json字符串
