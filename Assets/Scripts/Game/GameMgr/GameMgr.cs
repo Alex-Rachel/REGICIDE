@@ -839,8 +839,6 @@ partial class GameMgr : Singleton<GameMgr>
     public int GameLevel = 0;
     public void RestartGame()
     {
-        BattleSys.Instance.StartLevel(LevelDiffType.FirstType);
-
         var _index = PlayerPrefs.GetInt("GameLevel");
         GameLevel = _index;
 
@@ -887,6 +885,9 @@ partial class GameMgr : Singleton<GameMgr>
         TurnCard();
         EventCenter.Instance.EventTrigger("RefreshGameUI");
         EventCenter.Instance.EventTrigger("GameStart");
+
+        BattleSys.Instance.StartLevel(LevelDiffType.FirstType);
+        RoundMgr.Instance.Init();
     }
     #endregion
 

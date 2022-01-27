@@ -49,6 +49,11 @@ public class BattleLevelLogic : Entity
         return OnStart();
     }
 
+    public bool AfterStart()
+    {
+        return OnAfterStart();
+    }
+
     public void Update()
     {
         OnUpdate();
@@ -60,6 +65,11 @@ public class BattleLevelLogic : Entity
     }
 
     protected virtual bool OnInit()
+    {
+        return true;
+    }
+
+    protected virtual bool OnAfterStart()
     {
         return true;
     }

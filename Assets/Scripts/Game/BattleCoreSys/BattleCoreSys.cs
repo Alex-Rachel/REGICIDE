@@ -18,8 +18,8 @@ class BattleCoreSys : BaseLogicSys<BattleCoreSys>
 //        BattleCoreMgr.RegDriver(coreDriver);
 
 //        RefreshFps(false);
-
-//        DodEntityVisualFactory.Init();
+        
+        DodEntityVisualFactory.Init();
 
 //#if DOD_DEBUG
 //            m_timer = GameTimerMgr.Instance.CreateLoopTimer("debug battle core", 5, DebugTimer);
@@ -36,12 +36,18 @@ class BattleCoreSys : BaseLogicSys<BattleCoreSys>
 
         // 帧率 随机种子
         var context = BattleCoreMgr.CreateContext(FixedFps, 1, 1);
+
+        DodEntityVisualFactory.ApplyEntityVisualFactoru(context.visualFactory);
+
         var battle = BattleCoreMgr.CreateBattle(context);
         if (battle == null)
         {
             Debug.LogError("create battle failed");
             return false;
         }
+        m_currBattle = battle;
+        m_currStartParam = startParam;
+        // BattleCoreUtil.CurrBattle = battle;
 
         var ret = m_currBattle.StartLevel(startParam);
         if (!ret)
@@ -49,6 +55,7 @@ class BattleCoreSys : BaseLogicSys<BattleCoreSys>
             Debug.LogError("create battle level failed");
             return false;
         }
+
 
         return true;
     }

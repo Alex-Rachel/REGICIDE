@@ -41,6 +41,7 @@ class LevelMonsterMgr
         param.refreshTime = 0;
         param.isBoss = false;
         m_ownLogic.SendVisualEvent(EntityVisualEvent.LEVEL_SHOW_MONSTER_WAVE, param);
+
     }
 
     /// <summary>
@@ -49,9 +50,9 @@ class LevelMonsterMgr
     public void SpawnMonsterByWave()
     {
         // 暂定只有一个
-        if (m_monsterIDdic.ContainsKey(1))
+        if (m_monsterIDdic.ContainsKey(0))
         {
-            var monsterID = m_monsterIDdic[1];
+            var monsterID = m_monsterIDdic[0];
             SpawnMonster(monsterID);
             var monsterCount = 1;
 

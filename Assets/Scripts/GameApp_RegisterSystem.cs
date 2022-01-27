@@ -113,6 +113,8 @@ sealed partial class GameApp
         AddLogicSys(DataCenterSys.Instance);
         AddLogicSys(AudioSys.Instance);
         AddLogicSys(UISys.Instance);
+        AddLogicSys(BattleCoreSys.Instance);
+
 
         GameClient.Instance.Init();
     }

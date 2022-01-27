@@ -69,6 +69,15 @@ public class EntityBuffStateChangeParam
     public int buffStateId;
 }
 
+public class EntityVisualRefreshAttrParam
+{
+    /// <summary>
+    /// 唯一ID，用来logic层注册
+    /// </summary>
+    public int hp;
+    public float atk;
+}
+
 /// <summary>
 /// 关卡场景掉落处理
 /// </summary>
@@ -184,6 +193,12 @@ public enum EntityVisualEvent
 
     #region 角色相关
     ACTOR_BEGIN,
+
+    /// <summary>
+    /// 刷新属性
+    /// </summary>
+    ACTOR_REFRESH_ATTR,
+
 
     /// <summary>
     /// 状态变化

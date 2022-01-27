@@ -25,6 +25,7 @@ public class NormalLevelLogic : BattleLevelLogic
         // 地图表现相关的方法 例如寻路 地图拾取物等
         // m_info = new LevelLogicInfo();
 
+
         // 注册实体管理器的事件
         Context.actorMgr.OnActorCreate += OnActorCreate;
         Context.actorMgr.OnActorDieAction += OnActorDie;
@@ -54,6 +55,12 @@ public class NormalLevelLogic : BattleLevelLogic
 
         m_monsterMgr.Init(m_curLevelBaseCfg.MonsterID);
 
+        return true;
+    }
+
+    protected override bool OnAfterStart()
+    {
+        m_monsterMgr.StartSpawn();
         return true;
     }
 

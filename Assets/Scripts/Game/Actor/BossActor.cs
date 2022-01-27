@@ -159,6 +159,9 @@ public class BossActor : GameActor
         EventCenter.Instance.AddEventListener<int>("Hurt", Hurt);
         EventCenter.Instance.AddEventListener<int>("DownAtk", DownAtk);
         EventCenter.Instance.AddEventListener("BeJokerAtk", BeJokerAtk);
+
+        AddEntityEventListener(EntityVisualEvent.ACTOR_STATE_CHANGE, OnActorStateChange);
+        AddEntityEventListener(EntityVisualEvent.ACTOR_REFRESH_ATTR, OnRefreshAttr);
     }
 
     private void DeRegisterEvent()
@@ -221,6 +224,12 @@ public class BossActor : GameActor
         }
 
         MaxHp = Hp;
+
+    }
+
+    public void RefreshEntity(ActorEntity entity)
+    {
+        OwnActor = entity;
     }
 
     private void BeJokerAtk()
@@ -317,5 +326,25 @@ public class BossActor : GameActor
     {
         EventCenter.Instance.EventTrigger("BossAttack");
         Debug.Log("BossAttack");
+    }
+
+    public void OnRefreshAttr(int eventId)
+    {
+        var entity = OwnActor;
+        var param = entity.EventParam.GetCurrentParam(eventId) as EntityVisualRefreshAttrParam;
+        RefreshAttr(param);
+    }
+
+    public void RefreshAttr(EntityVisualRefreshAttrParam param)
+    {
+        Debug.Log("开始刷新怪物属性");
+        Hp = param.hp;
+        Atk = Mathf.CeilToInt(param.atk);
+    }
+    
+
+    public void OnActorStateChange(int state)
+    {
+
     }
 }

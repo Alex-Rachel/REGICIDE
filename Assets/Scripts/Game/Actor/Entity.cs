@@ -60,6 +60,43 @@ abstract public class Entity : IBattleContextHost
             }
         }
     }
+
+    internal void FlushVisualEvent()
+    {
+        m_visualEventCache.Flush();
+    }
+
+    /// <summary>
+    /// 创建可视化的对象
+    /// </summary>
+    protected void CreateVisual()
+    {
+        if (visual != null)
+        {
+            return;
+        }
+
+        visual = Context.visualFactory.CreateVisual(this);
+    }
+
+    /// <summary>
+    /// 创建可视化的对象
+    /// </summary>
+    protected void BindVisual()
+    {
+        if (visual != null)
+        {
+            return;
+        }
+
+        // visual = Context.BindVisual(this);
+        Context.BindVisual(this);
+    }
+
+    protected void DestoryVisual()
+    {
+        // Context.visualFactory.FreeVisual(this);
+    }
 }
 
 

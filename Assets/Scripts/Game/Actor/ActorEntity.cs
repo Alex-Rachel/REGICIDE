@@ -245,6 +245,8 @@ public abstract class ActorEntity : Entity
             return false;
         }
 
+        CreateVisual();
+        BindVisual();
         for (int i = 0; i < m_listCmpt.Count; i++)
         {
             m_listCmpt[i].OnVisualReady();
@@ -261,7 +263,7 @@ public abstract class ActorEntity : Entity
     private void BaseInit()
     {
         ///数据属性
-        //ActorData = AddCmpt<ActorData>();
+        ActorData = AddCmpt<ActorData>();
     }
 
     protected bool BaseAfterInit()

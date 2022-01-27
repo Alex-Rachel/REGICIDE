@@ -38,6 +38,20 @@ class LevelMgr : Singleton<LevelMgr>
 {
     private LevelStatus m_status = LevelStatus.StatusInit;
 
+    public LevelStatus Status
+    {
+        get { return m_status; }
+        set
+        {
+            if (m_status != value)
+            {
+                m_status = value;
+                // m_timeoutRetryCount = 0;
+                // RefreshStatusTime();
+            }
+        }
+    }
+
     private int m_curLevelIndex = 0;
     private int[] m_curLevelArr;
 
@@ -55,16 +69,19 @@ class LevelMgr : Singleton<LevelMgr>
 
         m_curLevelArr = m_diffCfg.LevelArray;
         var _index = PlayerPrefs.GetInt("GameLevel");
+        _index = 0;
         if (_index >= m_curLevelArr.Length)
         {
             Debug.LogWarningFormat("未找到关卡ID：{0}", _index);
         }
         m_curLevelIndex = m_curLevelArr[_index];
 
+        Status = LevelStatus.StatusLoading;
         //创建地图资源，初始化地图表现
         InitMap();
 
         InitBattleCore(m_curLevelIndex);
+        Status = LevelStatus.StatusLoaded;
     }
 
     /// <summary>
@@ -91,6 +108,7 @@ class LevelMgr : Singleton<LevelMgr>
     {
         var param = new StartLevelParam();
         param.m_levelID = (uint)levelID;
+        param.LevelType = (int)LevelLogicType.SoloLevelType;
         BattleCoreSys.Instance.InitBattle(param);
     }
 

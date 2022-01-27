@@ -28,6 +28,8 @@ public class BattleContext
     /// 按照模拟帧来计算的时间
     /// </summary>
     internal float time;
+
+    public EntityVisualFactory visualFactory = new EntityVisualFactory();
     #endregion
 
     /// <summary>
@@ -49,5 +51,25 @@ public class BattleContext
         deltaTime = 1f / _fps;
         fps = _fps;
 
+    }
+
+    public void BindVisual(Entity entity)
+    {
+        var typeId = entity.GetTypeId();
+        switch (typeId)
+        {
+            case (int)EntityTypeDefine.EntityHero:
+                var Visual = ActorMgr.Instance.GetPlayerActor();
+                Visual.OwnActor = entity as ActorEntity;
+                Visual.BindEntity = entity as ActorEntity;
+                break;
+            case (int)EntityTypeDefine.EntityMonster:
+                var bossVisual = GameMgr.Instance.BossActor;
+                bossVisual.OwnActor = entity as ActorEntity;
+                bossVisual.BindEntity = entity as ActorEntity;
+                break;
+        }
+
+        return; 
     }
 }

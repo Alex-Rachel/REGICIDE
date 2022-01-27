@@ -27,7 +27,7 @@ public enum ActorEntitySide
 /// <summary>
 /// 管理所有 实体
 /// </summary>
-public class ActorEntityMgr : IBattleContextHost
+class ActorEntityMgr : BattleSystem
 {
 
     internal List<ActorEntity> m_listActor = new List<ActorEntity>();
@@ -44,12 +44,15 @@ public class ActorEntityMgr : IBattleContextHost
 
     private uint m_nextActorId;
 
-    public BattleContext Context
+    protected override bool OnInit()
     {
-        get
+        for (int i = 0; i < m_listSide.Length; i++)
         {
-            return Context;
+            m_listSide[i] = new List<ActorEntity>();
         }
+
+        // m_actorPhysics = new ActorPhysics(this);
+        return true;
     }
 
     /// <summary>
@@ -168,7 +171,7 @@ public class ActorEntityMgr : IBattleContextHost
     }
 
 
-    protected void FixedUpdate()
+    protected override void FixedUpdate()
     {
         var listActor = m_listActor;
 
@@ -180,10 +183,54 @@ public class ActorEntityMgr : IBattleContextHost
         for (int i = 0; i < listActor.Count; i++)
         {
             var actor = listActor[i];
-            // actor.FlushVisualEvent();
+            actor.FlushVisualEvent();
         }
 
         // CheckDiedActor();
+    }
+
+    protected override void OnDestroy()
+    {
+        var listActor = m_listActor;
+        for (int i = 0; i < listActor.Count; i++)
+        {
+            var actor = listActor[i];
+            actor.Destroy();
+        }
+
+        m_listActor.Clear();
+        m_actorPool.Clear();
+        m_listPlayer.Clear();
+        for (int i = 0; i < m_listSide.Length; i++)
+        {
+            m_listSide[i].Clear();
+        }
+    }
+
+    private void CheckDiedActor()
+    {
+        var nowTime = Context.time;
+        var listDied = m_listDiedActor;
+        for (int i = 0; i < listDied.Count; i++)
+        {
+            var actor = listDied[i];
+            if (actor.IsDestroyed)
+            {
+                listDied.RemoveAt(i);
+                i--;
+                continue;
+            }
+
+            ///判断是否需要清理
+            //if (actor.m_waitDestroyTime <= nowTime)
+            //{
+            //    DestroyActor(actor);
+
+            //    listDied.RemoveAt(i);
+            //    i--;
+            //    continue;
+            //}
+        }
     }
 
     #region 通用事件

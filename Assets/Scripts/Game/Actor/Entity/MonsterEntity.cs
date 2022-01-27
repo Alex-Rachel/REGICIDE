@@ -61,6 +61,13 @@ public class MonsterEntity : ActorEntity
     protected override void AfterCreated()
     {
         InitMonsterAttachSkill();
+
+        var baseAttr = ActorData.m_baseData;
+        // 在visual创建之后 刷新
+        var param = EntityVisualEventParam.CreateEventParam<EntityVisualRefreshAttrParam>(EntityVisualEvent.ACTOR_REFRESH_ATTR);
+        param.hp = baseAttr.MaxHP;
+        param.atk = baseAttr.Damage;
+        SendVisualEvent(EntityVisualEvent.ACTOR_REFRESH_ATTR, param);
     }
 
     private void OnSelfDied()

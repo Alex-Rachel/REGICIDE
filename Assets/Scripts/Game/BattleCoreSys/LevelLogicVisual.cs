@@ -19,6 +19,11 @@ class LevelLogicVisual : IEntityVisual
         m_isVisitMode = isVisitMode;
     }
 
+    public void SetOwner(Entity entity)
+    {
+        m_owner = (BattleLevelLogic)entity;
+    }
+
     public void OnEntityEvent(int eventId)
     {
         if (eventId == (int)EntityVisualEvent.LEVEL_ALL_KILLED)

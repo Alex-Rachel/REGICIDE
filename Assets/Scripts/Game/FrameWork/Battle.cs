@@ -10,6 +10,8 @@ public class Battle : IBattleContextHost
         get { return m_context; }
     }
 
+    private List<BattleSystem> m_listSystem = new List<BattleSystem>();
+
     // internal BattleGmMgr GmMgr;
 
     public Battle(BattleContext context)
@@ -32,9 +34,9 @@ public class Battle : IBattleContextHost
         //AddSystem(timerMgr);
         //Context.timerMgr = timerMgr;
 
-        //var actorMgr = new ActorEntityMgr();
-        //AddSystem(actorMgr);
-        //Context.actorMgr = actorMgr;
+        var actorMgr = new ActorEntityMgr();
+        AddSystem(actorMgr);
+        Context.actorMgr = actorMgr;
 
         //Context.damageHelper = new SkillDamageHelper(Context);
 
@@ -43,6 +45,11 @@ public class Battle : IBattleContextHost
         //    Destroy();
         //    return false;
         //}
+        if (!CallSystemInit())
+        {
+            Destroy();
+            return false;
+        }
 
         return true;
     }
@@ -89,28 +96,33 @@ public class Battle : IBattleContextHost
 
         m_logic = logic;
 
+        if (!logic.AfterStart())
+        {
+            return false;
+        }
+
         return true;
     }
 
-    //private void AddSystem(BattleSystem system)
-    //{
-    //    m_listSystem.Add(system);
-    //}
+    private void AddSystem(BattleSystem system)
+    {
+        m_listSystem.Add(system);
+    }
 
-    //private bool CallSystemInit()
-    //{
-    //    var ret = true;
-    //    for (int i = 0; i < m_listSystem.Count; i++)
-    //    {
-    //        var system = m_listSystem[i];
-    //        if (!system.Init(this))
-    //        {
-    //            ret = false;
-    //            break;
-    //        }
-    //    }
+    private bool CallSystemInit()
+    {
+        var ret = true;
+        for (int i = 0; i < m_listSystem.Count; i++)
+        {
+            var system = m_listSystem[i];
+            if (!system.Init(this))
+            {
+                ret = false;
+                break;
+            }
+        }
 
-    //    return ret;
-    //}
+        return ret;
+    }
 
 }
