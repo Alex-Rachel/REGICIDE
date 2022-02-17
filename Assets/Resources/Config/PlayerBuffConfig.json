@@ -1,0 +1,74 @@
+{
+  "1001": {
+    "BuffID": 1001,
+    "BuffName": "伤害增加",
+    "BuffType": 1,
+    "BuffValue": 0.5,
+    "BuffValue2": 0,
+    "HandleState": 1,
+    "CanAddBuff": 1
+  },
+  "1002": {
+    "BuffID": 1002,
+    "BuffName": "伤害固定增加",
+    "BuffType": 2,
+    "BuffValue": 3,
+    "BuffValue2": 0,
+    "HandleState": 1,
+    "CanAddBuff": 1
+  },
+  "1003": {
+    "BuffID": 1003,
+    "BuffName": "防御增加",
+    "BuffType": 3,
+    "BuffValue": 0.5,
+    "BuffValue2": 0,
+    "HandleState": 4,
+    "CanAddBuff": 1
+  },
+  "1004": {
+    "BuffID": 1004,
+    "BuffName": "防御固定增加",
+    "BuffType": 4,
+    "BuffValue": 3,
+    "BuffValue2": 0,
+    "HandleState": 4,
+    "CanAddBuff": 1
+  },
+  "1005": {
+    "BuffID": 1005,
+    "BuffName": "苦行僧",
+    "BuffType": 5,
+    "BuffValue": 11,
+    "BuffValue2": 21,
+    "HandleState": 0,
+    "CanAddBuff": 0
+  },
+  "1006": {
+    "BuffID": 1006,
+    "BuffName": "赌狗",
+    "BuffType": 6,
+    "BuffValue": 0.3,
+    "BuffValue2": 0.5,
+    "HandleState": 1,
+    "CanAddBuff": 0
+  },
+  "1007": {
+    "BuffID": 1007,
+    "BuffName": "赌神",
+    "BuffType": 6,
+    "BuffValue": 0.7,
+    "BuffValue2": 0.2,
+    "HandleState": 1,
+    "CanAddBuff": 0
+  },
+  "1008": {
+    "BuffID": 1008,
+    "BuffName": "塔罗牌XXI·世界",
+    "BuffType": 7,
+    "BuffValue": 0,
+    "BuffValue2": 0,
+    "HandleState": 0,
+    "CanAddBuff": 0
+  }
+}

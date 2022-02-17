@@ -186,7 +186,6 @@ public partial class UIWindow
         for (var i = 0; i < canvas.Length; i++)
         {
             var canva = canvas[i];
-            //canva.additionalShaderChannels = AdditionalCanvasShaderChannels.TexCoord1;
         }
 
         return true;
@@ -452,19 +451,21 @@ public partial class UIWindow
             return false;
         }
 
-        if (m_go.activeSelf == false)
-        {
-            return false;
-        }
-
         OnUpdate();
 
+        if (m_listChild!= null)
+        {
+            for (int i = 0; i < m_listChild.Count; i++)
+            {
+                m_listChild[i].OnUpdate();
+            }
+        }
         return true;
     }
 
     protected virtual void OnUpdate()
     {
-
+        
     }
 
     public virtual void Hide()

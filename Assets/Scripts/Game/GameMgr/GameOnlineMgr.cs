@@ -354,12 +354,25 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
             return;
         }
 
+        List<global::CardData> list = GameMgr.Instance.m_choiceList;
+
         if (choiceIndex)
         {
             MainPack mainPack_ = ProtoUtil.BuildMainPack(RequestCode.Game, ActionCode.Attack);
             mainPack_.Str = "JKR";
             mainPack_.User = index.ToString();
+            RoomPack roomPack_ = new RoomPack();
+            ActorPack actorPack_ = new ActorPack();
+
+            for (int i = 0; i < list.Count; i++)
+            {
+                RegicideProtocol.CardData cardData = InstanceCardData(list[i]);
+                actorPack_.CuttrntCards.Add(cardData);
+            }
+            roomPack_.ActorPack.Add(actorPack_);
+            mainPack_.Roompack.Add(roomPack_);
             GameClient.Instance.SendCSMsg(mainPack_);
+            return;
         }
 
         if (CurrentGameIndex!=MyGameIndex)
@@ -376,7 +389,6 @@ class GameOnlineMgr:DataCenterModule<GameOnlineMgr>
         }
         MainPack mainPack = ProtoUtil.BuildMainPack(RequestCode.Game, ActionCode.Attack);
 
-        List<global::CardData> list = GameMgr.Instance.m_choiceList;
 
         if (list.Count == 0)
         {

@@ -94,6 +94,10 @@ public static class Utils
     public static IEnumerator Wait(float second = 1.0f,Action callBack = null)
     {
         yield return new WaitForSeconds(second);
-        callBack?.Invoke();
+        if (callBack != null)
+        {
+            callBack();
+            callBack = null;
+        }
     }
 }

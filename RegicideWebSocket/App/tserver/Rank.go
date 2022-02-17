@@ -392,6 +392,12 @@ func PostRankData(ctx *gin.Context) {
 		}
 	case "10":
 		{
+			talent1 := ctx.PostForm("talent1")
+			talent2 := ctx.PostForm("talent2")
+			talent3 := ctx.PostForm("talent3")
+			inttalent1, _ := strconv.Atoi(talent1)
+			inttalent2, _ := strconv.Atoi(talent2)
+			inttalent3, _ := strconv.Atoi(talent3)
 			var dbRank model.RogRank
 			common.DB.Where("Roleid = ?", userId).Find(&dbRank)
 			if dbRank.Roleid == 0 {
@@ -399,17 +405,17 @@ func PostRankData(ctx *gin.Context) {
 				switch completeType {
 				case "1":
 					{
-						dbRank := &model.RogRank{Roleid: intuserId, Username: userName, GoldCount: 1, YinCount: 0, TongCount: 0}
+						dbRank := &model.RogRank{Roleid: intuserId, Username: userName, GoldCount: 1, YinCount: 0, TongCount: 0, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3}
 						common.DB.Create(dbRank)
 					}
 				case "2":
 					{
-						dbRank := &model.RogRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 1, TongCount: 0}
+						dbRank := &model.RogRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 1, TongCount: 0, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3}
 						common.DB.Create(dbRank)
 					}
 				case "3":
 					{
-						dbRank := &model.RogRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 0, TongCount: 1}
+						dbRank := &model.RogRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 0, TongCount: 1, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3}
 						common.DB.Create(dbRank)
 					}
 				}
@@ -418,23 +424,29 @@ func PostRankData(ctx *gin.Context) {
 				case "1":
 					{
 						goldCount := dbRank.GoldCount + 1
-						common.DB.Model(&dbRank).Update(model.RogRank{GoldCount: goldCount})
+						common.DB.Model(&dbRank).Update(model.RogRank{GoldCount: goldCount, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3})
 					}
 				case "2":
 					{
 						yinCount := dbRank.YinCount + 1
-						common.DB.Model(&dbRank).Update(model.RogRank{YinCount: yinCount})
+						common.DB.Model(&dbRank).Update(model.RogRank{YinCount: yinCount, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3})
 					}
 				case "3":
 					{
 						tongCount := dbRank.TongCount + 1
-						common.DB.Model(&dbRank).Update(model.RogRank{TongCount: tongCount})
+						common.DB.Model(&dbRank).Update(model.RogRank{TongCount: tongCount, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3})
 					}
 				}
 			}
 		}
 	case "11":
 		{
+			talent1 := ctx.PostForm("talent1")
+			talent2 := ctx.PostForm("talent2")
+			talent3 := ctx.PostForm("talent3")
+			inttalent1, _ := strconv.Atoi(talent1)
+			inttalent2, _ := strconv.Atoi(talent2)
+			inttalent3, _ := strconv.Atoi(talent3)
 			var dbRank model.RogHunRank
 			common.DB.Where("Roleid = ?", userId).Find(&dbRank)
 			if dbRank.Roleid == 0 {
@@ -442,17 +454,17 @@ func PostRankData(ctx *gin.Context) {
 				switch completeType {
 				case "1":
 					{
-						dbRank := &model.RogHunRank{Roleid: intuserId, Username: userName, GoldCount: 1, YinCount: 0, TongCount: 0}
+						dbRank := &model.RogHunRank{Roleid: intuserId, Username: userName, GoldCount: 1, YinCount: 0, TongCount: 0, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3}
 						common.DB.Create(dbRank)
 					}
 				case "2":
 					{
-						dbRank := &model.RogHunRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 1, TongCount: 0}
+						dbRank := &model.RogHunRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 1, TongCount: 0, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3}
 						common.DB.Create(dbRank)
 					}
 				case "3":
 					{
-						dbRank := &model.RogHunRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 0, TongCount: 1}
+						dbRank := &model.RogHunRank{Roleid: intuserId, Username: userName, GoldCount: 0, YinCount: 0, TongCount: 1, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3}
 						common.DB.Create(dbRank)
 					}
 				}
@@ -461,17 +473,17 @@ func PostRankData(ctx *gin.Context) {
 				case "1":
 					{
 						goldCount := dbRank.GoldCount + 1
-						common.DB.Model(&dbRank).Update(model.RogHunRank{GoldCount: goldCount})
+						common.DB.Model(&dbRank).Update(model.RogHunRank{GoldCount: goldCount, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3})
 					}
 				case "2":
 					{
 						yinCount := dbRank.YinCount + 1
-						common.DB.Model(&dbRank).Update(model.RogHunRank{YinCount: yinCount})
+						common.DB.Model(&dbRank).Update(model.RogHunRank{YinCount: yinCount, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3})
 					}
 				case "3":
 					{
 						tongCount := dbRank.TongCount + 1
-						common.DB.Model(&dbRank).Update(model.RogHunRank{TongCount: tongCount})
+						common.DB.Model(&dbRank).Update(model.RogHunRank{TongCount: tongCount, Talent1: inttalent1, Talent2: inttalent2, Talent3: inttalent3})
 					}
 				}
 			}

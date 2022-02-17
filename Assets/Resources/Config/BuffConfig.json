@@ -65,9 +65,9 @@
   "1008": {
     "BuffID": 1008,
     "BuffType": 5,
-    "BuffValue": 12,
+    "BuffValue": 15,
     "BuffValue2": 0,
-    "BuffName": "威压",
+    "BuffName": "魔法装甲I",
     "HandleState": 1,
     "CanAddBuff": 0
   },
@@ -173,10 +173,28 @@
   "1020": {
     "BuffID": 1020,
     "BuffType": 5,
-    "BuffValue": 8,
+    "BuffValue": 10,
     "BuffValue2": 0,
     "BuffName": "深渊",
     "HandleState": 1,
+    "CanAddBuff": 0
+  },
+  "1021": {
+    "BuffID": 1021,
+    "BuffType": 11,
+    "BuffValue": 6,
+    "BuffValue2": 0,
+    "BuffName": "掘墓I",
+    "HandleState": 0,
+    "CanAddBuff": 0
+  },
+  "1022": {
+    "BuffID": 1022,
+    "BuffType": 11,
+    "BuffValue": 3,
+    "BuffValue2": 0,
+    "BuffName": "掘墓II",
+    "HandleState": 0,
     "CanAddBuff": 0
   }
 }

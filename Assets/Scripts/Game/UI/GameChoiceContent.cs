@@ -54,8 +54,14 @@ class GameChoiceUI : UIWindow
     #region 事件
     private void OnClickRestartBtn()
     {
-        GameMgr.Instance.RandChangeCards();
-        m_closeAction?.Invoke();
+        if (GameMgr.Instance.RandChangeCards())
+        {
+            if (m_closeAction != null)
+            {
+                m_closeAction();
+                m_closeAction = null;
+            }
+        }
     }
 
     public void RegisterCloseAction(Action callback)

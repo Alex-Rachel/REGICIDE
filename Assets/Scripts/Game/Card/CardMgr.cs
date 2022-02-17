@@ -6,6 +6,7 @@ public class CardMgr:Singleton<CardMgr>{
     private Sprite[] m_sprites;
     private Dictionary<string,Sprite> m_spriteDic= new Dictionary<string, Sprite>();
     public Sprite BigJoker;
+    public Sprite BlackJoker;
     public CardMgr(){
         m_sprites = Resources.LoadAll<Sprite>("Images/card");
         for (int i = 0; i < m_sprites.Length; i++)
@@ -15,7 +16,6 @@ public class CardMgr:Singleton<CardMgr>{
         }
 
         BigJoker = Resources.Load<Sprite>("Images/BigJoker");
-
 
         var bossSprite = Resources.LoadAll<Sprite>("Images/Boss/");
         for (int i = 0; i < bossSprite.Length; i++)

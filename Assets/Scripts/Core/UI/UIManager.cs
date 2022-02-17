@@ -29,7 +29,7 @@ public class UIManager : Singleton<UIManager>
     private Transform mid;
     private Transform top;
     private Transform system;
-
+    private Camera uiCamera;
     public UIManager()
     {
         GameObject obj =  ResourcesManager.Instance.AllocGameObject("UI/Canvas");
@@ -37,6 +37,8 @@ public class UIManager : Singleton<UIManager>
         GameObject.DontDestroyOnLoad(obj);
         obj = ResourcesManager.Instance.AllocGameObject("UI/EventSystem");
         GameObject.DontDestroyOnLoad(obj);
+
+        uiCamera = GameObject.FindGameObjectWithTag("UICamera").GetComponent<Camera>();
 
         bottom = canvas.Find("Bottom");
         mid = canvas.Find("Mid");
@@ -302,5 +304,32 @@ public class UIManager : Singleton<UIManager>
         entry.callback.AddListener(callback);
 
         trigger.triggers.Add(entry);
+    }
+
+    public bool GetMouseDownUiPos(out Vector3 screenPos)
+    {
+        bool hadMouseDown = false;
+        Vector3 mousePos = Vector3.zero;
+
+#if UNITY_STANDALONE_WIN || UNITY_EDITOR
+        mousePos = Input.mousePosition;
+        hadMouseDown = Input.GetMouseButton(0);
+#else
+        if (Input.touchCount > 0)
+        {
+            mousePos = Input.GetTouch(0).position;
+            hadMouseDown = true;
+        }
+        else
+        {
+            hadMouseDown = false;
+        }
+#endif
+        Vector2 pos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(canvas as RectTransform, Input.mousePosition,
+            uiCamera, out pos);
+        screenPos = canvas.TransformPoint(pos);
+
+        return hadMouseDown;
     }
 }

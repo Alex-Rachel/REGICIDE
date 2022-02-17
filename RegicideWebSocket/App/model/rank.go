@@ -90,6 +90,9 @@ type RogRank struct {
 	GoldCount int    `gorm:int(11);not null`
 	YinCount  int    `gorm:int(11);not null`
 	TongCount int    `gorm:int(11);not null`
+	Talent1   int    `gorm:int(11);not null`
+	Talent2   int    `gorm:int(11);not null`
+	Talent3   int    `gorm:int(11);not null`
 }
 
 type RogHunRank struct {
@@ -100,4 +103,7 @@ type RogHunRank struct {
 	GoldCount int    `gorm:int(11);not null`
 	YinCount  int    `gorm:int(11);not null`
 	TongCount int    `gorm:int(11);not null`
+	Talent1   int    `gorm:int(11);not null`
+	Talent2   int    `gorm:int(11);not null`
+	Talent3   int    `gorm:int(11);not null`
 }

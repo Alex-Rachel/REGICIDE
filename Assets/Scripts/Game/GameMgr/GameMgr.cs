@@ -116,26 +116,27 @@ partial class GameMgr : Singleton<GameMgr>
 
     #region 战斗中卡排操作
 
-    public void RandChangeCards()
+    public bool RandChangeCards()
     {
         var choiceCount = m_choiceList.Count;
         var choiceRandCount = m_choiceRandomList.Count;
         if (choiceRandCount == 0 && choiceCount == 0)
         {
             UISys.Mgr.CloseWindow<GameChoiceUI>();
-            return;
+            return true;
         }
 
         if (choiceRandCount != choiceCount)
         {
             UISys.ShowTipMsg("随机牌库与我的手牌数目需要相同！");
-            return;
+            return false;
         }
+
         var ableChangeCard = (5 - GameLevel) < 1 ? 1 : (5 - GameLevel);
         if (choiceRandCount > ableChangeCard)
         {
             UISys.ShowTipMsg(string.Format("该难度下一次最多调度 {0} 张手牌！",ableChangeCard));
-            return;
+            return false;
         }
 
         for (int i = 0; i < m_choiceRandomList.Count; i++)
@@ -156,6 +157,7 @@ partial class GameMgr : Singleton<GameMgr>
         m_choiceRandomList.Clear();
         UISys.Mgr.CloseWindow<GameChoiceUI>();
         EventCenter.Instance.EventTrigger("RefreshGameUI");
+        return true;
     }
 
     public List<CardData> RandTurnCards()
@@ -554,7 +556,12 @@ partial class GameMgr : Singleton<GameMgr>
             UISys.ShowTipMsg(string.Format("当前阶段是：{0}，无法攻击", stateMsgDic[gameState]));
             return;
         }
-        if (!CheckCardInvild(m_choiceList))
+        if (RogueLikeMgr.Instance.playerData.NeedCheckCards && !CheckCardInvild(m_choiceList))
+        {
+            UISys.ShowTipMsg("您选择的卡片不符合规定");
+            return;
+        }
+        else if (!RogueLikeMgr.Instance.CheckCardInvild())
         {
             UISys.ShowTipMsg("您选择的卡片不符合规定");
             return;
@@ -845,35 +852,53 @@ partial class GameMgr : Singleton<GameMgr>
         TotalKillBossCount = 0;
         LeftJokerCount = 2;
         Roguelike = false;
+
         switch (GameLevel)
         {
             case 1:
                 NeedKillBossCount = 4;
+                UISys.Mgr.CloseWindow<FeatureUI>();
                 break;
             case 2:
                 NeedKillBossCount = 6;
+                UISys.Mgr.CloseWindow<FeatureUI>();
                 break;
             case 3:
                 NeedKillBossCount = 12;
+                UISys.Mgr.CloseWindow<FeatureUI>();
                 break;
             case 4:
                 NeedKillBossCount = 14;
+                UISys.Mgr.CloseWindow<FeatureUI>();
                 break;
             case 5:
                 NeedKillBossCount = 14;
+                UISys.Mgr.CloseWindow<FeatureUI>();
                 break;
             case 10:
                 Roguelike = true;
+                UISys.Mgr.ShowWindow<FeatureUI>(UI_Layer.Top);
+                RogueLikeMgr.Instance.Clear();
+                EventCenter.Instance.EventTrigger("RefreshFeature");
                 ShowRogueRuleUI();
                 NeedKillBossCount = 14;
-                break;
+                return;
             case 11:
                 Roguelike = true;
+                UISys.Mgr.ShowWindow<FeatureUI>(UI_Layer.Top);
+                RogueLikeMgr.Instance.Clear();
+                EventCenter.Instance.EventTrigger("RefreshFeature");
                 ShowRogueRuleUI();
                 NeedKillBossCount = 14;
-                break;
+                return;
         }
-        
+
+        ImpRestartGame();
+    }
+
+    private void ImpRestartGame()
+    {
+        m_maxCardNum = 8;
         InitTotalCards();
         InitMyCards();
         m_curList.Clear();
@@ -897,7 +922,20 @@ partial class GameMgr : Singleton<GameMgr>
         {
             UISys.Mgr.ShowWindow<RuleFirstUI>().Init("FirstRogShow",
                 "RogueLike模式为新难度的模式 \n \n在RogueLike模式中 Boss君主会有随机天赋 \n \n比如<color=#FF0000>增伤</color> 君主增加5伤害 \n \n或者是稀有天赋 <color=#13FF00>回复</color> 、<color=#13FF00>炼狱</color> 、<color=#FFD200>畸变</color> 等60种不同的天赋组合 \n \n如果这还不能满足您的探索欲 \n \n请试试RoguLike魂模式 \n\n去探索吧玩家，在这片随机的王国土地 \n \n以及最耀眼的荣誉榜留下属于你的事迹。", 
-                false);
+                false,(() =>
+                {
+                    UISys.Mgr.ShowWindow<FeatureChoiceUI>().RegisterCloseBack((() =>
+                    {
+                        ImpRestartGame();
+                    }));
+                }));
+        }
+        else
+        {
+            UISys.Mgr.ShowWindow<FeatureChoiceUI>().RegisterCloseBack((() =>
+            {
+                ImpRestartGame();
+            }));
         }
     }
 }

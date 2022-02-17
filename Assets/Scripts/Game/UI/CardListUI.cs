@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+using RegicideProtocol;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 class CardListUI : UIWindow
@@ -35,7 +37,7 @@ class CardListUI : UIWindow
 
 }
 
-class ItemCard : UIWindowWidget
+partial class ItemCard : UIEventItem<ItemCard>
 {
     private List<Heart> m_listHeart = new List<Heart>();
     private CardData m_cardData;
@@ -160,6 +162,10 @@ class ItemCard : UIWindowWidget
         m_choice = false;
         m_goCardInfo.gameObject.SetActive(false);
         Refresh();
+        if (!isRandomCard)
+        {
+            CanDrag = true;
+        }
     }
 
     public void Init(RegicideProtocol.CardData data, bool isRandomCard = false)
@@ -227,8 +233,11 @@ class ItemCard : UIWindowWidget
         else
         {
             m_showFeature = false;
-            m_goFeature.SetActive(false);
-            m_textFeature.text = "";
+            if (m_goFeature != null)
+            {
+                m_goFeature?.SetActive(false);
+                m_textFeature.text = "";
+            }
         }
        
         if (GameMgr.Instance.IsLandScape)
@@ -262,11 +271,12 @@ class ItemCard : UIWindowWidget
                     break;
                 case CardType.BLACK_JOKER:
                     m_textInfo.text = ("当前黑桃和草花 <color=#000000>♠ ♣</color> 无效");
+                    m_imgIcon.sprite = CardMgr.Instance.BigJoker;
                     break;
             }
         }
 
-        if (m_goBoss != null && /*(m_cardData.cardType != CardType.RED_JOKER) && */(m_cardData.cardType != CardType.BLACK_JOKER))
+        if (m_goBoss != null)
         {
             m_goBoss.SetActive(true);
             m_imgIcon.gameObject.SetActive(false);
@@ -274,6 +284,16 @@ class ItemCard : UIWindowWidget
             if (m_cardData.cardType == CardType.RED_JOKER)
             {
                 var strBoss = "BOSSBIGJOKER";
+                m_imgBoss.sprite = CardMgr.Instance.GetCardSprite(strBoss);
+                m_imgBoss.SetNativeSize();
+                m_imgBoss.transform.localScale = new Vector2(0.3f, 0.3f);
+                m_imgCardValue.sprite = CardMgr.Instance.GetCardSprite("Joker");
+                m_imgCardType.gameObject.SetActive(false);
+                return;
+            }
+            else if(m_cardData.cardType == CardType.BLACK_JOKER)
+            {
+                var strBoss = "BOSSJOKER2";
                 m_imgBoss.sprite = CardMgr.Instance.GetCardSprite(strBoss);
                 m_imgBoss.SetNativeSize();
                 m_imgBoss.transform.localScale = new Vector2(0.3f, 0.3f);
@@ -506,4 +526,135 @@ class ItemCard : UIWindowWidget
 class Heart : UIWindowWidget
 {
 
+}
+
+partial class ItemCard
+{
+    public enum UIDragType
+    {
+        Draging,
+        Drop
+    }
+    private UIDragType m_dragState = UIDragType.Drop;
+    private Vector3 m_itemOldPos;
+    private Vector3 m_itemCachePos;
+    private bool m_CanDrag  = false;
+
+    public bool CanDrag
+    {
+        get
+        {
+            return m_CanDrag;
+        }
+        set
+        {
+            m_CanDrag = value;
+            if (m_CanDrag)
+            {
+                BindDrag();
+            }
+        }
+    }
+    protected override void OnCreate()
+    {
+        base.OnCreate();
+        BindDrag();
+    }
+
+    private void BindDrag()
+    {
+        if (m_CanDrag)
+        {
+            BindBeginDragEvent(delegate (ItemCard item, PointerEventData data)
+            {
+                if (!m_CanDrag)
+                {
+                    return;
+                }
+                StartDragItem(UIDragType.Draging);
+            });
+
+            BindEndDragEvent(delegate (ItemCard item, PointerEventData data)
+            {
+                if (!m_CanDrag)
+                {
+                    return;
+                }
+                EndDrag();
+            });
+        }
+    }
+
+    protected override void OnUpdate()
+    {
+        if (!m_CanDrag)
+        {
+            return;
+        }
+        UpdateDragPos();
+    }
+
+    private void StartDragItem(UIDragType type)
+    {
+        if (type != UIDragType.Drop)
+        {
+            if (!m_choice)
+            {
+                Choice();
+            }
+            m_itemOldPos = transform.position;
+            Vector3 pos;
+            UISys.Mgr.GetMouseDownUiPos(out pos);
+            m_itemCachePos = pos;
+            UpdateDragPos();
+            m_dragState = type;
+        }
+    }
+
+    private void EndDrag()
+    {
+        m_dragState = UIDragType.Drop;
+        transform.position = m_itemOldPos;
+#if UNITY_EDITOR
+        //Debug.LogError("m_itemCachePos.y - m_itemOldPos.y " + (m_itemCachePos.y - m_itemOldPos.y));
+#endif
+        if (m_itemCachePos.y - m_itemOldPos.y > 3)
+        {
+            if (GameOnlineMgr.Instance.IsOnlineGameIng)
+            {
+                if (GameOnlineMgr.Instance.Gamestate == GAMESTATE.State1)
+                {
+                    GameOnlineMgr.Instance.AttackReq();
+                }
+                else if (GameOnlineMgr.Instance.Gamestate == GAMESTATE.State4)
+                {
+                    GameOnlineMgr.Instance.AbordReq();
+                }
+            }
+            else
+            {
+                if (GameMgr.Instance.gameState == GameMgr.GameState.STATEONE)
+                {
+                    GameMgr.Instance.Attack();
+                }
+                else if (GameMgr.Instance.gameState == GameMgr.GameState.STATEFOUR)
+                {
+                    EventCenter.Instance.EventTrigger("AbordCard");
+                }
+            }
+        }
+    }
+
+    private void UpdateDragPos()
+    {
+        if (m_dragState == UIDragType.Drop)
+        {
+            return;
+        }
+
+        Vector3 pos;
+        UISys.Mgr.GetMouseDownUiPos(out pos);
+        transform.position += (pos - m_itemCachePos);
+        m_itemCachePos = pos;
+    }
 }

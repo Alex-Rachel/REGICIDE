@@ -15,9 +15,11 @@ var GMMODE bool
 
 var TOTAL_CARD_COUNT int
 
+var UseJoker bool
+
 //InitCards 初始化所有卡牌
 func (room *Room) InitCards() {
-	TOTAL_CARD_COUNT = 52
+	TOTAL_CARD_COUNT = 54
 	for i := 0; i < TOTAL_CARD_COUNT; i++ {
 		cardData := InstanceCardData(i)
 		room.ToTalCardList = append(room.ToTalCardList, &cardData)
@@ -227,7 +229,7 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 	cacheListCount := len(cacheList)
 
 	var index int
-	if cacheListCount <= 0 || room.CURRENT_BOSS_INDEX >= 13 {
+	if cacheListCount <= 0 || room.CURRENT_BOSS_INDEX > 13 {
 		room.ISGAMEWIN = true
 		// logger.Emer("监控有问题！！！:cacheList", cacheList, "监控:cacheList.count:", cacheListCount)
 		index = 0
@@ -256,7 +258,7 @@ func (room *Room) InitBoss() *GameProto.ActorPack {
 		atk = 25
 		hp = 50
 	} else {
-		atk = 30
+		atk = 25
 		hp = 50
 	}
 	room.RoomPack.Gamestate.State = GameProto.GAMESTATE_STATE1

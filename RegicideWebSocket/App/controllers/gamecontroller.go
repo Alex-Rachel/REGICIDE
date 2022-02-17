@@ -182,6 +182,9 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 		} else if !hadJoker {
 			client.RoomInfo.RoomPack.Gamestate.State = GameProto.GAMESTATE_STATE4
 			mainpack.Roompack[0].Gamestate.State = GameProto.GAMESTATE_STATE4
+		} else if hadJoker {
+			client.RoomInfo.RoomPack.Gamestate.State = GameProto.GAMESTATE_STATE1
+			mainpack.Roompack[0].Gamestate.State = GameProto.GAMESTATE_STATE1
 		} else {
 			client.RoomInfo.RoomPack.Gamestate.State = GameProto.GAMESTATE_STATE4
 			mainpack.Roompack[0].Gamestate.State = GameProto.GAMESTATE_STATE4

@@ -137,6 +137,19 @@ public class BossActor : GameActor
         ActorBuffMgr.SetBuffByFeatures(m_features,this);
     }
 
+    public void RemoveFeature(int featureId)
+    {
+        for (int i = 0; i < m_features.Count; i++)
+        {
+            var feature = m_features[i];
+            if (feature!= null && feature.ID == featureId)
+            {
+                m_features.Remove(feature);
+                break;
+            }
+        }
+    }
+
     public bool Refresh(ActorPack bossActorPack)
     {
         bool bossDie = false;

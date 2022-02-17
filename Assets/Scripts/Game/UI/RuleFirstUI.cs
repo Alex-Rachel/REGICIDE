@@ -4,6 +4,7 @@ using UnityEngine.UI;
 
 class RuleFirstUI : UIWindow
 {
+    private Action m_action;
     private TypeWriter m_typeWriter;
     #region 脚本工具生成的代码
     private Button m_btnClose;
@@ -26,13 +27,13 @@ class RuleFirstUI : UIWindow
         m_btnDontShow.onClick.AddListener((() =>
         {
             PlayerPrefs.SetInt(m_tag, 1);
-            Close();
+            OnClickCloseBtn();
         }));
     }
     #endregion
 
     private string m_tag;
-    public void Init(string tag, string text,bool showOnce = true)
+    public void Init(string tag, string text,bool showOnce = true,Action callBack = null)
     {
         m_tag = tag;
         if (!text.Equals(String.Empty))
@@ -45,6 +46,11 @@ class RuleFirstUI : UIWindow
             PlayerPrefs.SetInt(m_tag, 1);
             m_btnDontShow.gameObject.SetActive(false);
         }
+
+        if (callBack!= null)
+        {
+            m_action = callBack;
+        }
     }
 
     protected override void OnCreate()
@@ -55,6 +61,11 @@ class RuleFirstUI : UIWindow
     #region 事件
     private void OnClickCloseBtn()
     {
+        if (m_action != null)
+        {
+            m_action();
+            m_action = null;
+        }
         Close();
     }
     #endregion

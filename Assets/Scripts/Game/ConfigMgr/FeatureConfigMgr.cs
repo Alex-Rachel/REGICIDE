@@ -30,6 +30,10 @@ public class FeatureConfigMgr : Singleton<FeatureConfigMgr>
     {
         foreach (var config in m_listFeatureConfig)
         {
+            if ((int)config.Rate <= 0)
+            {
+                continue;
+            }
             FeatureRate featureRate = new FeatureRate(RankdTotalRate, RankdTotalRate + (int)config.Rate);
             RankdTotalRate += (int)config.Rate;
             m_randFeatureConfig.Add(featureRate, config);

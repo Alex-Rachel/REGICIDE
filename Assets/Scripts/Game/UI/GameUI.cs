@@ -33,6 +33,7 @@ class GameUI : UIWindow
     private Text m_textCurrentKill;
     private Text m_textCurrentLevel;
     private Button m_btnNewMode;
+    private Button m_btnLeft;
     protected override void ScriptGenerator()
     {
         m_goContent = FindChild("m_goContent").gameObject;
@@ -49,6 +50,7 @@ class GameUI : UIWindow
 
         m_goInventoryRoot = FindChild("m_goContent/m_goTop/m_goInventoryRoot");
         m_btnUsed = FindChildComponent<Button>("m_goContent/m_goMiddle/m_btnUsed");
+        m_btnLeft = FindChildComponent<Button>("m_goContent/m_goMiddle/m_btnLeft");
         m_textLeft = FindChildComponent<Text>("m_goContent/m_goMiddle/m_btnLeft/m_textLeft");
         m_textLeftKill = FindChildComponent<Text>("m_goContent/m_goTop/m_textLeftKill");
         m_textCurrentKill = FindChildComponent<Text>("m_goContent/m_goTop/m_textCurrentKill");
@@ -61,6 +63,7 @@ class GameUI : UIWindow
         m_btnAttack.onClick.AddListener(Attack);
         m_btnAbord.onClick.AddListener(Abord);
         m_btnUsed.onClick.AddListener(ShowUsed);
+        m_btnLeft.onClick.AddListener(OnClickLeft);
         m_btnNewMode.onClick.AddListener((() => { GameMgr.Instance.StartNewMode();}));
         m_inventoryUI = CreateWidgetByType<InventoryUI>(m_goInventoryRoot);
         m_jokerCard = CreateWidgetByType<ItemCard>(m_tfJoker);
@@ -136,6 +139,13 @@ class GameUI : UIWindow
         UISys.Mgr.ShowWindow<UsedListUI>().InitUI();
     }
 
+    private void OnClickLeft()
+    {
+        if (RogueLikeMgr.Instance.playerData.CanSeeAllCards)
+        {
+            UISys.Mgr.ShowWindow<UsedListUI>().InitWorldUI();
+        }
+    }
     #region 事件
     protected override void OnCreate()
     {

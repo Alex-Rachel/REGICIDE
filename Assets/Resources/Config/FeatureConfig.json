@@ -88,7 +88,7 @@
     "UseColor": 1,
     "ColorStr": "00F9FF",
     "Rate": 10,
-    "Desc": "抵挡12以上的伤害"
+    "Desc": "抵挡15以上的伤害"
   },
   "row_9": {
     "ID": 1008,
@@ -259,6 +259,32 @@
     "UseColor": 1,
     "ColorStr": "FFFFFF",
     "Rate": 1,
-    "Desc": "抵挡8以上的伤害"
+    "Desc": "抵挡10以上的伤害"
+  },
+  "row_22": {
+    "ID": 1021,
+    "Name": "掘墓I",
+    "BuffIDArray": [
+      1021
+    ],
+    "Type": 14,
+    "OnlyOne": 1,
+    "UseColor": 0,
+    "ColorStr": "F",
+    "Rate": 3,
+    "Desc": " 墓地每6张牌，攻击加一 "
+  },
+  "row_23": {
+    "ID": 1022,
+    "Name": "掘墓II",
+    "BuffIDArray": [
+      1022
+    ],
+    "Type": 14,
+    "OnlyOne": 1,
+    "UseColor": 0,
+    "ColorStr": "F",
+    "Rate": 1,
+    "Desc": " 墓地每3张牌，攻击加一 "
   }
 }

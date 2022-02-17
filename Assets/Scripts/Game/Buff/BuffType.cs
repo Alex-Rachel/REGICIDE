@@ -43,6 +43,10 @@
     /// <summary>
     /// 凋零
     /// </summary>
-    BUFF_DIAOLING
+    BUFF_DIAOLING,
+    /// <summary>
+    /// 掘墓
+    /// </summary>
+    BUFF_JUEMU,
 }
 

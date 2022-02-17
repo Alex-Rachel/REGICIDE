@@ -88,6 +88,10 @@ public class BattleMgr : Singleton<BattleMgr>
 #if UNITY_EDITOR
         Debug.LogFormat(string.Format("GenAttackData: 数值{0},抽卡{1},降低boss攻击{2},回复{3},双倍攻击{4}", attackData.Damage, attackData.CouldTurnCard, attackData.CouldDownBossAtk, attackData.CouldAddHp, attackData.CouldDoubleAtk));
 #endif
+        if (GameMgr.Instance.Roguelike)
+        {
+            RogueLikeMgr.Instance.buffMgr.HandleBuffAttack(ref attackData);
+        }
         return attackData;
     }
 

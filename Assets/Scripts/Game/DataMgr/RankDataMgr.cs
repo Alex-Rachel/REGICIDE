@@ -39,6 +39,13 @@ public class RankDataMgr : Singleton<RankDataMgr>
         request.AddField("userId", userId.ToString());
         request.AddField("userName", GameOnlineMgr.Instance.MyName);
         request.AddField("completeType", completeType.ToString());
+        if (rankIndex>=10)
+        {
+            request.AddField("talent1", RogueLikeMgr.Instance.playerData.Talent1.ToString());
+            request.AddField("talent2", RogueLikeMgr.Instance.playerData.Talent2.ToString());
+            request.AddField("talent3", RogueLikeMgr.Instance.playerData.Talent3.ToString());
+        }
+
         request.Send();
     }
 

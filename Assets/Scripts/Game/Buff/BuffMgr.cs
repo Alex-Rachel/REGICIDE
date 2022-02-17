@@ -150,6 +150,23 @@ public class BuffMgr
     public void ClearBuff()
     {
         m_buffDic.Clear();
+        m_buffList.Clear();
+    }
+
+    public void RemoveBuff(int buffID)
+    {
+        if (m_buffDic.ContainsKey(buffID))
+        {
+            for (int i = 0; i < m_buffList.Count; i++)
+            {
+                if (m_buffList[i].BuffID == buffID)
+                {
+                    m_buffList.Remove(m_buffList[i]);
+                    break;
+                }
+            }
+            m_buffDic.Remove(buffID);
+        }
     }
 
     /// <summary>
@@ -177,6 +194,10 @@ public class BuffMgr
                 break;
             case BuffType.BUFF_ADD_DEMAGE_VALUE:
                 bossActor.Atk += (int)(buff.BuffValue);
+                break;
+            case BuffType.BUFF_JUEMU:
+                var value = GameMgr.Instance.UseCardDatas.Count / (buff.BuffValue);
+                bossActor.Atk += (int)value;
                 break;
         }
 #if UNITY_EDITOR
