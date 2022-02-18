@@ -69,6 +69,50 @@ class BattleCoreSys : BaseLogicSys<BattleCoreSys>
             m_currStartParam = null;
         }
     }
+
+    public bool IsCurrBattleFinish()
+    {
+        return m_currBattle == null || m_currBattle.Context.IsBattleFinish;
+    }
+
+    public ActorEntity GetCurrCtrlEntity()
+    {
+        if (m_currBattle == null)
+        {
+            return null;
+        }
+
+        var ctrlActor = ActorMgr.Instance.GetPlayerActor();
+        if (ctrlActor != null)
+        {
+            return ctrlActor.BindEntity;
+        }
+
+        return null;
+    }
+
+    public void UseSkill(uint skillID)
+    {
+        if (m_currBattle == null)
+        {
+            return;
+        }
+
+        ///如果战斗已经结束
+        if (IsCurrBattleFinish())
+        {
+            UISys.ShowTipMsg("战斗结束，不能释放招式");
+            //UISys.Mgr.ShowTipMsg(TextDefine.ID_TIPS_BATTLE_FIN_DISABLE_ZHAOSHI);
+            return;
+        }
+
+        var ctrlEntity = GetCurrCtrlEntity();
+        if (ctrlEntity != null && !ctrlEntity.IsDied)
+        {
+            // 释放技能入口
+            ctrlEntity.SkillMgr.PlaySkill(skillID);
+        }
+    }
 }
 
 

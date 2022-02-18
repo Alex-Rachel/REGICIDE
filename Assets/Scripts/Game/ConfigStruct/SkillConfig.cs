@@ -6,10 +6,13 @@
 
 // Generate From SkillConfig.xlsx
 
+using System.Collections.Generic;
+
 public class SkillBaseConfig
 {
 	public int ID; // 技能ID
 	public string Name; // 技能名称
+	public Dictionary<int,double> DamageDic; // 伤害字典（伤害类型，伤害参数）
 	public int[] BuffIDArray; // BuffID数组
 	public string[] DescArray; // 描述数组
 }

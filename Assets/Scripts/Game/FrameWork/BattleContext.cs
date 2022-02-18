@@ -59,7 +59,7 @@ public class BattleContext
         switch (typeId)
         {
             case (int)EntityTypeDefine.EntityHero:
-                var Visual = ActorMgr.Instance.GetPlayerActor();
+                var Visual = GameMgr.Instance.PlayerActor;
                 Visual.OwnActor = entity as ActorEntity;
                 Visual.BindEntity = entity as ActorEntity;
                 break;

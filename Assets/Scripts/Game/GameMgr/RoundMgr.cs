@@ -52,10 +52,17 @@ class RoundMgr : Singleton<RoundMgr>
         CurRound = RoundStatus.RoundStart;
     }
 
+    public void TriggerRoundEnd()
+    {
+        CurRound = RoundStatus.RoundEnd;
+        m_roundNum++;
+    }
+
     public void TriggerRoundOver()
     {
         CurRound = RoundStatus.RoundStart;
         m_isInited = false;
+        m_roundNum = 0;
     }
 
     public void RegRoundChangeEvent(Action<RoundStatus, RoundStatus> action)

@@ -42,18 +42,17 @@ public class ActorMgr : Singleton<ActorMgr>
         }
     }
 
+    private PlayerActor m_instancePlayerActor;
     public PlayerActor GetPlayerActor()
     {
-        if (GameMgr.Instance.BossActor == null)
+        if (m_instancePlayerActor == null)
         {
-            return new PlayerActor();
+            m_instancePlayerActor = new PlayerActor();
+            return m_instancePlayerActor;
         }
         else
         {
-            // GameMgr.Instance.BossActor = null;
-            var actor = new PlayerActor();
-            // GameMgr.Instance.BossActor = actor;
-            return actor;
+            return m_instancePlayerActor;
         }
     }
 

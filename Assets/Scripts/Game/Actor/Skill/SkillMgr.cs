@@ -44,6 +44,40 @@ public class SkillMgr : ActorEntityCmpt
         }
 
         SkillData playData = new SkillData(OwnActor);
+        playData.Init(skillId);
+
+        DamageInfo dmgInfo = new DamageInfo();
+        var damageDic = skillBaseConfig.DamageDic;
+        foreach (var item in damageDic)
+        {
+            switch (item.Key)
+            {
+                case 1:
+                    // 直接伤害类型 伤害值 = 攻击力*伤害参数
+                    var atk = OwnActor.ActorData.AttrData.Damage;
+                    dmgInfo.damage += Mathf.FloorToInt((float)(atk * item.Value));
+                    break;
+            }
+        }
+
+
+        SkillImpactData impactData = new SkillImpactData();
+        SkillImpactSource m_source = new SkillImpactSource();
+
+        ActorEntityEventHelper.SendSkillImpacted(targetActor, OwnActor, dmgInfo, impactData, m_source);
+
+        DoPlaySkill(playData, skillBaseConfig);
+
+    }
+
+    private void CalSkillDamage()
+    {
+
+    }
+
+    private void DoPlaySkill(SkillData playData, SkillBaseConfig skillBaseConfig)
+    {
+
     }
 }
 

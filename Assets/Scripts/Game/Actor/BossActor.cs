@@ -200,41 +200,41 @@ public class BossActor : GameActor
     {
         IsSamllJoker = false;
         IsBigJoker = false;
-        switch ((CardValue)cardData.CardValue)
-        {
-            case CardValue.J:
-            {
-                Hp = 20;
-                Atk = 10;
-                break;
-            }
-            case CardValue.Q:
-            {
-                Hp = 30;
-                Atk = 15;
-                break;
-            }
-            case CardValue.K:
-            {
-                Hp = 40;
-                Atk = 20;
-                break;
-            }
-            case CardValue.SmallJoker:
-            {
-                Hp = 50;
-                Atk = 25;
-                IsSamllJoker = true;
-                break;
-            }
-            case CardValue.Joker:
-            {
-                Hp = 50;
-                Atk = 25;
-                IsBigJoker = true;
-                break;
-            }
-        }
+        //switch ((CardValue)cardData.CardValue)
+        //{
+        //    case CardValue.J:
+        //    {
+        //        Hp = 20;
+        //        Atk = 10;
+        //        break;
+        //    }
+        //    case CardValue.Q:
+        //    {
+        //        Hp = 30;
+        //        Atk = 15;
+        //        break;
+        //    }
+        //    case CardValue.K:
+        //    {
+        //        Hp = 40;
+        //        Atk = 20;
+        //        break;
+        //    }
+        //    case CardValue.SmallJoker:
+        //    {
+        //        Hp = 50;
+        //        Atk = 25;
+        //        IsSamllJoker = true;
+        //        break;
+        //    }
+        //    case CardValue.Joker:
+        //    {
+        //        Hp = 50;
+        //        Atk = 25;
+        //        IsBigJoker = true;
+        //        break;
+        //    }
+        //}
 
         MaxHp = Hp;
 

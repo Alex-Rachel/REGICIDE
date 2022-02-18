@@ -37,11 +37,20 @@ abstract public class Entity : IBattleContextHost
     public Entity(BattleContext context)
     {
         InitEntity(context);
+        m_visualEventCache = new EntityVisualEventCache(this);
     }
 
     public void InitEntity(BattleContext context)
     {
         m_context = context;
+    }
+
+    protected void ClearWhenInPool()
+    {
+        DestoryVisual();
+        m_visualEventCache.Clear();
+        // Debuger.Clear();
+        // transform.position = TSVector.zero;
     }
 
     /// <summary>
@@ -84,7 +93,7 @@ abstract public class Entity : IBattleContextHost
     /// </summary>
     protected void BindVisual()
     {
-        if (visual != null)
+        if (visual == null)
         {
             return;
         }
@@ -96,6 +105,7 @@ abstract public class Entity : IBattleContextHost
     protected void DestoryVisual()
     {
         // Context.visualFactory.FreeVisual(this);
+        m_visualEventCache.Clear();
     }
 }
 

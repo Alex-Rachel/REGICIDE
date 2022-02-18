@@ -71,6 +71,7 @@ public class BattleLevelLogic : Entity
 
     protected virtual bool OnAfterStart()
     {
+        RoundMgr.Instance.TriggerRoundStart();
         return true;
     }
 

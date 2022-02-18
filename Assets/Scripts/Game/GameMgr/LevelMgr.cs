@@ -109,6 +109,8 @@ class LevelMgr : Singleton<LevelMgr>
         var param = new StartLevelParam();
         param.m_levelID = (uint)levelID;
         param.LevelType = (int)LevelLogicType.SoloLevelType;
+        PlayerCreateParam playerCreateParam = new PlayerCreateParam();
+        param.AddPlayerCreateParam(playerCreateParam);
         BattleCoreSys.Instance.InitBattle(param);
     }
 

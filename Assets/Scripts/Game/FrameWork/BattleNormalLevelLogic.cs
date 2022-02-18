@@ -55,6 +55,21 @@ public class NormalLevelLogic : BattleLevelLogic
 
         m_monsterMgr.Init(m_curLevelBaseCfg.MonsterID);
 
+        var param = m_startParam.m_playerCreateParam;
+        int playerCnt = param.Count;
+
+        for (int i = 0; i < playerCnt; i++)
+        {
+            var createData = ActorEntityCreateData.CreatePlayerCreateData(param[i], ActorEntitySide.SideAtk);
+
+            var playerEntity = Context.actorMgr.CreateActorEntity(createData, true) as PlayerEntity;
+            if (playerEntity == null)
+            {
+                Debug.LogError("create actor failed");
+                continue;
+            }
+        }
+
         return true;
     }
 

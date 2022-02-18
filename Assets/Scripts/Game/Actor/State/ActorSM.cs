@@ -1,4 +1,6 @@
-﻿enum ActorStateEvent
+﻿using UnityEngine;
+
+enum ActorStateEvent
 {
     NullTransitionID = 0,
 
@@ -40,7 +42,98 @@ public enum ActorStateID
 /// <summary>
 /// 角色状态机
 /// </summary>
-class ActorSM
+class ActorSM : XStateMachine
 {
+    public SMBaseState CurrentState
+    {
+        get { return _currentState; }
+    }
+
+    #region Initialization
+
+    protected override void initializeStateMachine()
+    {
+        for (int i = 1; i < (int)ActorStateID.Count; i++)
+        {
+            this.initOneState((ActorStateID)i);
+        }
+    }
+
+    private SMBaseState initOneState(ActorStateID stateID)
+    {
+        SMBaseState _state = null;
+        switch (stateID)
+        {
+            case ActorStateID.Idle:
+            {
+                _state = new ActorIdleState();
+                break;
+            }
+            case ActorStateID.Move:
+            {
+                _state = new ActorMoveState();
+                break;
+            }
+            case ActorStateID.Die:
+            {
+                _state = new ActorDieState();
+                break;
+            }
+            case ActorStateID.Stun:
+            {
+                _state = new ActorStunState();
+                break;
+            }
+            default:
+            {
+                Debug.LogErrorFormat("invalid state: {0}", stateID);
+            }
+                break;
+        }
+
+        _state.StateMachine = this;
+        _state.ID = (int)stateID;
+        _state.InitializeState();
+        this.AddState(_state);
+
+        return _state;
+    }
+
+    #endregion
+
+    protected override void OnCreate()
+    {
+        OwnActor.CurrState = ActorStateID.Idle;
+        AddEventListener<ActorStateEvent, object>(ActorEntityEventType.ActorStateEvent, OnChangeActorStateEvent);
+    }
+
+    protected override void OnStateChange()
+    {
+        OwnActor.CurrState = (ActorStateID)_currentStateID;
+        // SetDebugInfo("CurrState", ((ActorStateID)_currentStateID).ToString());
+    }
+
+    protected override void FixedUpdate()
+    {
+        var currState = _currentState;
+        if (currState != null)
+        {
+            //FProfiler.BeginSample(_currentState.GetType().FullName);
+            currState.OnUpdate(null);
+            //FProfiler.EndSample(); 
+
+            //SetDebugInfo("CurrState", ((ActorStateID)_currentStateID).ToString());
+        }
+    }
+
+    #region Call back for event
+
+    private void OnChangeActorStateEvent(ActorStateEvent actorEvent, object data)
+    {
+        if (_currentState != null)
+            _currentState.OnReason((int)actorEvent, data);
+    }
+
+    #endregion
 
 }

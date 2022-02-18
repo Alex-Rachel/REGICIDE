@@ -75,6 +75,7 @@ partial class GameMgr : Singleton<GameMgr>
         }
     }
     public BossActor BossActor;
+    public PlayerActor PlayerActor;
     private List<CardData> m_totalList = new List<CardData>(TotalCardNum);  //总牌堆
     private List<CardData> m_curList = new List<CardData>();                //手卡
     public List<CardData> m_myList = new List<CardData>(TotalCardNum);     //可抽卡
@@ -578,6 +579,13 @@ partial class GameMgr : Singleton<GameMgr>
 
         var attackData = BattleMgr.Instance.GenAttackData(m_choiceList);
 
+        // 释放技能流程
+        for (int i = 0; i < m_choiceList.Count; i++)
+        {
+            var card = m_choiceList[i];
+            BattleCoreSys.Instance.UseSkill(card.CardSkillID);
+        }
+
         if (attackData.HadJoker)
         {
             LeftJokerCount--;
@@ -911,10 +919,16 @@ partial class GameMgr : Singleton<GameMgr>
         EventCenter.Instance.EventTrigger("RefreshGameUI");
         EventCenter.Instance.EventTrigger("GameStart");
 
+        InitPlayer();
         BattleSys.Instance.StartLevel(LevelDiffType.FirstType);
         RoundMgr.Instance.Init();
     }
     #endregion
+
+    public void InitPlayer()
+    {
+        PlayerActor = ActorMgr.Instance.GetPlayerActor();
+    }
 
     void ShowRogueRuleUI()
     {

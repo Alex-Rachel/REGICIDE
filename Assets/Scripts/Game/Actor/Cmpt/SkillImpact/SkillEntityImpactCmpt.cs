@@ -36,7 +36,7 @@ class SkillEntityImpactCmpt : ActorEntityCmpt
         AddEventListener<ActorEntity, DamageInfo, SkillImpactData, SkillImpactSource>(
             ActorEntityEventType.SkillImpacted, OnSkillImpact);
 
-        AddEventListener<int>(ActorEntityEventType.UpdateWorldBossHP, OnUpdateWorldBossHP);
+        // AddEventListener<int>(ActorEntityEventType.UpdateWorldBossHP, OnUpdateWorldBossHP);
         // m_moveCmpt = OwnActor.MoveCmpt;
     }
 
@@ -62,54 +62,6 @@ class SkillEntityImpactCmpt : ActorEntityCmpt
     protected override void OnDestroy()
     {
         // DestoryBackOffTimer();
-    }
-
-    /// <summary>
-    /// 同步网络发过来的最新扣除血量
-    /// </summary>
-    /// <param name="subHp"></param>
-    void OnUpdateWorldBossHP(int svrBossHP)
-    {
-        if (OwnActor.ActorType != ActorEntityType.eMonster)
-        {
-            return;
-        }
-
-        if (OwnActor.IsDied)
-        {
-            return;
-        }
-
-        var monster = OwnActor as MonsterEntity;
-        var lastUpdateHP = monster.m_BossLastUpdateHP;
-        if (svrBossHP >= lastUpdateHP)
-        {
-            return;
-        }
-
-        var damageHp = lastUpdateHP - svrBossHP;
-        monster.m_BossLastUpdateHP = svrBossHP;
-
-        var actorData = OwnActor.ActorData;
-        var currHp = actorData.HP;
-
-        var causeDeath = false;
-
-        currHp -= damageHp;
-
-        var oldHP = actorData.HP;
-        if (currHp <= 0)
-        {
-            if (oldHP > 0)
-            {
-                actorData.HP = 0;
-                ActorEntityEventHelper.SendStateEvent(OwnActor, ActorStateEvent.Actor_Die);
-            }
-        }
-        else
-        {
-            actorData.HP = currHp;
-        }
     }
 
     void OnSkillImpact(ActorEntity caster, DamageInfo damage, SkillImpactData impactData, SkillImpactSource source)
@@ -210,6 +162,11 @@ class SkillEntityImpactCmpt : ActorEntityCmpt
 
             causeDeath = true;
             ActorEntityEventHelper.SendStateEvent(ownActor, ActorStateEvent.Actor_Die);
+        }
+        else
+        {
+            damageVal = oldHP - currHp;
+            actorData.HP = currHp;
         }
 
 #if DOD_DEBUG

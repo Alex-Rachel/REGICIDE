@@ -97,7 +97,13 @@ class LevelMonsterMgr
     /// <returns></returns>
     public bool CheckAllkill()
     {
-
+        for (int i = 0; i < m_monsters.Count; i++)
+        {
+            if (!m_monsters[i].IsDied)
+            {
+                return false;
+            }
+        }
         return true;
     }
 

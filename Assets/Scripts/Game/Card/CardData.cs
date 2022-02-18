@@ -53,6 +53,8 @@ public struct CardData
             return cardType == CardType.BLACK_JOKER || cardType == CardType.RED_JOKER;
         }
     }
+
+    public uint CardSkillID { private set; get; }
     #endregion
 
     public CardData(int cardInt)
@@ -83,5 +85,7 @@ public struct CardData
         {
             CardPower += 4 * CardValue - 45;
         }
+
+        CardSkillID = 1001;
     }
 }

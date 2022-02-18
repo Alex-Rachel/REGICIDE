@@ -21,5 +21,21 @@ class ActorEntityEventHelper
     {
         actor.Event.SendEvent(ActorEntityEventType.ActorStateChanged, old, newVal);
     }
+
+    /// <summary>
+    /// 发送技能命中处理
+    /// </summary>
+    /// <param name="actor"></param>
+    /// <param name="caster"></param>
+    /// <param name="damageInfo"></param>
+    public static void SendSkillImpacted(ActorEntity actor, ActorEntity caster,
+        DamageInfo damageInfo, SkillImpactData impactData,
+        SkillImpactSource source)
+    {
+        //             actor.ActorData.HP = 0;
+        //             ActorEntityEventHelper.SendStateEvent(actor, ActorStateEvent.Actor_Die);
+
+        actor.Event.SendEvent(ActorEntityEventType.SkillImpacted, caster, damageInfo, impactData, source);
+    }
 }
 

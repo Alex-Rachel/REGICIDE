@@ -12,6 +12,7 @@ public class Battle : IBattleContextHost
 
     private List<BattleSystem> m_listSystem = new List<BattleSystem>();
 
+    private bool m_hasProcessBattleFin = false;
     // internal BattleGmMgr GmMgr;
 
     public Battle(BattleContext context)
@@ -30,6 +31,8 @@ public class Battle : IBattleContextHost
 
     internal bool Create()
     {
+        MonoManager.Instance.AddUpdateListener(FixedUpdate);
+
         //var timerMgr = new FTimerMgr();
         //AddSystem(timerMgr);
         //Context.timerMgr = timerMgr;
@@ -53,6 +56,47 @@ public class Battle : IBattleContextHost
 
         return true;
     }
+
+    internal void FixedUpdate()
+    {
+        // m_currFrameId = frameId;
+
+        for (int i = 0; i < m_listSystem.Count; i++)
+        {
+            var system = m_listSystem[i];
+
+            // FProfiler.BeginFirstSample(system.GetType().FullName);
+            system.CallFixedUpdate();
+            // FProfiler.EndFirstSample();
+        }
+
+        // FProfiler.BeginFirstSample(m_logic.GetType().FullName);
+        m_logic.Update();
+        // FProfiler.EndFirstSample();
+
+        ///战斗结束后，就不记录消息了
+        //if (m_needRecordInputSet && !m_hasProcessBattleFin)
+        //{
+        //    Context.input.CollectFrameInputSet(m_inputSet, frameId);
+        //}
+
+        if (!m_hasProcessBattleFin && Context.IsBattleFinish)
+        {
+            ProcessBattleFin();
+        }
+    }
+
+    private void ProcessBattleFin()
+    {
+        m_hasProcessBattleFin = true;
+        // RefreshSnap();
+
+        if (m_logic != null)
+        {
+            m_logic.OnAfterBattleWin();
+        }
+    }
+
 
     public bool StartLevel(StartLevelParam startParam)
     {

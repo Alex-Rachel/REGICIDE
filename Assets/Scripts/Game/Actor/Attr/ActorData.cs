@@ -89,9 +89,13 @@ public class ActorData : ActorEntityCmpt
                 //}
 
                 ActorEntityEventHelper.SendHpChg(OwnActor, m_hpPercent, isDecrease);
+
+                var param = EntityVisualEventParam.CreateEventParam<EntityVisualRefreshAttrParam>(EntityVisualEvent.ACTOR_REFRESH_ATTR);
+                param.hp = m_hp;
+                OwnActor.SendVisualEvent(EntityVisualEvent.ACTOR_REFRESH_ATTR);
                 if (isDecrease)
                 {
-                    OwnActor.SendVisualEvent(EntityVisualEvent.PLAYER_ENTITY_DECREASE_HP);
+                    // OwnActor.SendVisualEvent(EntityVisualEvent.PLAYER_ENTITY_DECREASE_HP);
                 }
             }
         }
