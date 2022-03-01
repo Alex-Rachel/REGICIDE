@@ -50,6 +50,10 @@ class PlayerEntity : ActorEntity
 
     protected override bool OnEnterMap()
     {
+        AddSkillCaster();
+        var impact = AddCmpt<SkillEntityImpactCmpt>();
+        impact.InitPlayer();
+
         return true;
     }
 

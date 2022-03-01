@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BestHTTP.Extensions;
 using UnityEngine;
 
 
@@ -50,7 +51,7 @@ public class SkillMgr : ActorEntityCmpt
         var damageDic = skillBaseConfig.DamageDic;
         foreach (var item in damageDic)
         {
-            switch (item.Key)
+            switch (Convert.ToInt32(item.Key))
             {
                 case 1:
                     // 直接伤害类型 伤害值 = 攻击力*伤害参数
