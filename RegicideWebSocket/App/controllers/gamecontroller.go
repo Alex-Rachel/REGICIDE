@@ -33,6 +33,13 @@ func Attack(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) (*G
 	if mainpack.Roompack == nil || len(mainpack.Roompack) <= 0 {
 		return nil, errors.New("mainpack.Roompack is nil")
 	}
+	if client.RoomInfo.RoomPack == nil {
+		return nil, errors.New("roomInfo.RoomPack is nil")
+	}
+	if client.RoomInfo.RoomPack.BossActor == nil {
+		logger.Emer("BossActor:BossActor:", nil)
+		return nil, errors.New("roomInfo.RoomPack is nil")
+	}
 	if mainpack.Roompack[0].ActorPack == nil || len(mainpack.Roompack[0].ActorPack) <= 0 {
 		return nil, errors.New("mainpack.Roompack[0].ActorPack[0] is nil")
 	}

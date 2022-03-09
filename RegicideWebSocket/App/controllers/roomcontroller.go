@@ -193,6 +193,15 @@ func StartGame(client *server.Client, mainpack *GameProto.MainPack, isUdp bool) 
 
 	for i := 0; i < count; i++ {
 		room := server.RoomList[i]
+		if room == nil {
+			continue
+		}
+		if room.RoomPack == nil {
+			continue
+		}
+		if mainpack.Roompack[0] == nil {
+			continue
+		}
 		if room.RoomPack.RoomID == mainpack.Roompack[0].RoomID {
 			if client != room.ClientList[0] {
 				mainpack.Returncode = GameProto.ReturnCode_Fail
