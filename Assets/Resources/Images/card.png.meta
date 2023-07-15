@@ -165,7 +165,7 @@ TextureImporter:
       213: -403553647447184134
     second: card_53
   externalObjects: {}
-  serializedVersion: 11
+  serializedVersion: 12
   mipmaps:
     mipMapMode: 0
     enableMipMap: 0
@@ -185,6 +185,8 @@ TextureImporter:
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -193,9 +195,9 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: -1
-    aniso: -1
-    mipBias: -100
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
     wrapU: 1
     wrapV: 1
     wrapW: 1
@@ -216,10 +218,14 @@ TextureImporter:
   textureType: 8
   textureShape: 1
   singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
   maxTextureSizeSet: 0
   compressionQualitySet: 0
   textureFormatSet: 0
+  ignorePngGamma: 0
   applyGammaDecoding: 0
+  cookieLightType: 1
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -259,6 +265,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Server
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
@@ -1416,6 +1434,61 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      card_0: 5189691121816951081
+      card_1: -1150797853226429853
+      card_10: -6285694348100652515
+      card_11: 7247009199863952834
+      card_12: 8799890943240362401
+      card_13: -5730878019799153479
+      card_14: 2111860244624441137
+      card_15: 5536039749264606949
+      card_16: 7510658959863396369
+      card_17: 1697019322546908749
+      card_18: 1091916756874483999
+      card_19: 3459038646671603892
+      card_2: 4179361977775431376
+      card_20: 1804271963503620522
+      card_21: 7389427156121150376
+      card_22: 3739046437729302291
+      card_23: 480835609232195222
+      card_24: 9010558026739401144
+      card_25: -8195627329444483539
+      card_26: 7121121542154994164
+      card_27: -5700552110049869563
+      card_28: 2328419392559176251
+      card_29: 8852296037750511041
+      card_3: 3388945746152779112
+      card_30: 4154073768842987811
+      card_31: 2693357738077268862
+      card_32: 5687146191882094190
+      card_33: 5480723006670331781
+      card_34: -5784673579272902198
+      card_35: -7692873824269194333
+      card_36: 3973600948975352649
+      card_37: 6337735234584906332
+      card_38: 7715251158851104233
+      card_39: -5170238488712253943
+      card_4: 7797158584684704892
+      card_40: -1726152090308212849
+      card_41: 8027130820998465553
+      card_42: 3993158690706090220
+      card_43: -4993405572458106959
+      card_44: 1593605213218037102
+      card_45: 2742469377586461004
+      card_46: -1631228393013074176
+      card_47: 8166288953568076632
+      card_48: -4943934186041802475
+      card_49: 2277991108227711627
+      card_5: -2926814536932516816
+      card_50: -8027077566281379897
+      card_51: -3284983360476379740
+      card_52: -3675402643016422660
+      card_53: -403553647447184134
+      card_6: 1542423998797467731
+      card_7: 1726367332772499340
+      card_8: -8789749092250026857
+      card_9: 4831517175032741843
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0
